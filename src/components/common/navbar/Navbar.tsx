@@ -15,7 +15,7 @@ function NavbarLink({children, to}: {children: JSX.Element, to: string}) {
 
 export default function Navbar() {
   return <>
-    <div className="navbar-container">
+    <div className="navbar-container text-white">
       <div className="navbar-inner">
         <div className="navbar-item title-3 text-bold">
           <NavbarLink to='/films'>
