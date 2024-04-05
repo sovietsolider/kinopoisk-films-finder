@@ -12,11 +12,15 @@ export default function App() {
         token: {
           // Seed Token
           colorPrimary: '#00b96b',
-          borderRadius: 2,
-
+          borderRadius: 2, 
           // Alias Token
           colorBgContainer: '#f6ffed',
         },
+        components: {
+          Input: {
+            hoverBorderColor: '#f6ffed'
+          }
+        }
       }}
     ></ConfigProvider>
     <RouterProvider router={router} />
