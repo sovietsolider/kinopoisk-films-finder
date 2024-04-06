@@ -1,8 +1,11 @@
 import { Input, Modal, Pagination, PaginationProps, Skeleton } from "antd";
 import './FindByNameModal.scss'
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FilmCard from "@/components/routes/Films/components/FilmCard/FilmCard";
 import { Film } from "@/components/routes/Films/components/FilmCard/types";
+import { FilmsGrid } from "@/components/routes/Films/Films";
+import FilmsAPI from "@/api/films";
+import _ from 'lodash'
 
 export default function FindByNameModal({ opened }: { opened: boolean }) {
   const [name, setName] = useState<string>('')
@@ -16,7 +19,25 @@ export default function FindByNameModal({ opened }: { opened: boolean }) {
     setElementsPerPage(pageSize)
   }
 
+  const onNameChanged = useCallback(
+    _.debounce(async (name: string) => {
+      setFilms((await FilmsAPI.getFilmsByName(name, elementsPerPage, currentPage)).data.docs)
+    }, 3000), []
+  )
 
+  useEffect(() => {
+    onNameChanged(name)
+  }, [name])
+
+  const fetchFilms = async () => {
+    setIsLoading(true)
+    setFilms((await FilmsAPI.getFilmsByName(name, elementsPerPage, currentPage)).data.docs)
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    fetchFilms()
+  }, [currentPage, elementsPerPage])
 
   return <>
     <Modal
@@ -28,26 +49,13 @@ export default function FindByNameModal({ opened }: { opened: boolean }) {
           Поиск
         </div>
         <Input placeholder="Введите название..." value={name} onChange={(e) => setName(e.target.value)} />
-        <div className='films-list-container'>
-          {
-            isLoading ? <Skeleton active={true}></Skeleton> :
-              films.map((film: Film, index: number) => (
-                <FilmCard imgSrc={film.poster.previewUrl} name={film.name} />
-              ))
-          }
-        </div>
-        <div className='pagination-container'>
-          <Pagination
-            showSizeChanger
-            current={currentPage}
-            pageSize={elementsPerPage}
-            onChange={onPaginationChanged}
-            defaultCurrent={1}
-            total={50}
-            locale={{ items_per_page: "элементов" }}
-            pageSizeOptions={[10, 20, 50, 100]}
-          />
-        </div>
+        <FilmsGrid 
+          currentPage={currentPage} 
+          elementsPerPage={elementsPerPage}
+          films={films}
+          isLoading={isLoading}
+          onPaginationChanged={onPaginationChanged} 
+        />
       </div>
 
     </Modal>

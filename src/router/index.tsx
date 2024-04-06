@@ -1,6 +1,6 @@
 import MainView from "@/components/MainView";
 import Film from "@/components/routes/Film/Film";
-import Films from "@/components/routes/Films/Films";
+import {Films} from "@/components/routes/Films/Films";
 import { useEffect } from "react";
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, useNavigate } from "react-router-dom/dist/index";
 

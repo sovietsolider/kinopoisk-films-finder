@@ -9,8 +9,41 @@ import { FilmsFilterType } from './components/FilmsFilter/types'
 import { Pagination, PaginationProps, Skeleton } from 'antd'
 import { storedCurrentPage, storedElementsPerPage } from '@/store/filmsPagination'
 
+interface FilmsGridProps {
+  isLoading: boolean, 
+  films: any[],
+  currentPage: number,
+  elementsPerPage: number,
+  onPaginationChanged: PaginationProps['onChange']
+}
 
-export default function Films({onlyList=false}: {onlyList?: boolean}) {
+export function FilmsGrid({isLoading, films, currentPage, elementsPerPage, onPaginationChanged}: FilmsGridProps) {
+  return <>
+    <div className='films-list-container'>
+      {
+        isLoading ? <Skeleton active={true}></Skeleton> :
+          films.map((film: Film, index: number) => (
+            <FilmCard imgSrc={film.poster.previewUrl} name={film.name} />
+          ))
+      }
+    </div>
+    <div className='pagination-container'>
+      <Pagination
+        showSizeChanger
+        current={currentPage}
+        pageSize={elementsPerPage}
+        onChange={onPaginationChanged}
+        defaultCurrent={1}
+        total={50}
+        locale={{ items_per_page: "элементов" }}
+        pageSizeOptions={[10, 20, 50, 100]}
+      />
+    </div>
+  </>
+}
+
+
+export function Films() {
   const [films, setFilms] = useRecoilState(foundFilms)
   const [isLoading, setIsLoading] = useState(true)
   const [currentPage, setCurrentPage] = useRecoilState(storedCurrentPage)
@@ -33,7 +66,7 @@ export default function Films({onlyList=false}: {onlyList?: boolean}) {
   }
 
   useEffect(() => {
-    if(!isFirstRender) {
+    if (!isFirstRender) {
       getFilms(storedFilmsFilter as FilmsFilterType)
     } else {
       setIsFirstRender(false)
@@ -47,31 +80,16 @@ export default function Films({onlyList=false}: {onlyList?: boolean}) {
 
   return (<>
     <div className='films-container'>
-      {!onlyList ? <FilmsFilter onFilterChanged={onFilterChanged} /> : null}
+      <FilmsFilter onFilterChanged={onFilterChanged} />
 
-      <div className='films-list-container'>
-        {
-          isLoading ? <Skeleton active={true}></Skeleton> :
-            films.map((film: Film, index: number) => (
-              <FilmCard imgSrc={film.poster.previewUrl} name={film.name} />
-            ))
-        }
-      </div>
-      <div className='pagination-container'>
-          <Pagination
-            showSizeChanger
-            current={currentPage}
-            pageSize={elementsPerPage}
-            onChange={onPaginationChanged}
-            defaultCurrent={1}
-            total={50}
-            locale={{ items_per_page: "элементов"}}
-            pageSizeOptions={[10, 20, 50, 100]}
-          />
-        </div>
+      <FilmsGrid 
+        currentPage={currentPage} 
+        elementsPerPage={elementsPerPage} 
+        films={films} 
+        isLoading={isLoading} 
+        onPaginationChanged={onPaginationChanged}
+      />
     </div>
   </>
-
-
   )
 }
