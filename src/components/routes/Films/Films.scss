@@ -1,5 +1,29 @@
+@import '~@/assets/scss/_colors.scss';
+
+
 .films-list-container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 10px;
+}
+
+.ant-pagination-item > * {
+  color: white !important;
+}
+
+.ant-pagination-item-active {
+  * {
+    color: $primary !important;
+  }
+  
+  background-color: unset !important;
+}
+
+.ant-pagination-item-link > * {
+  color: white !important
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
 }

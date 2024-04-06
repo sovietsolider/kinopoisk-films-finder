@@ -1,24 +1,24 @@
-import { FilmsFilter } from "@/components/routes/Films/components/FilmsFilter/types";
+import { FilmsFilterType } from "@/components/routes/Films/components/FilmsFilter/types";
 import { http } from "./httpAxios";
 import _ from 'lodash'
 import { FilmsAdapter } from "@/adapters/films";
 
 export default class FilmsAPI {
-  public static async getFilms(limit: number, page: number, filter: FilmsFilter) {
-    console.log(filter)
-    let filmsByNameIds: number[] = []
-    if (filter.name) {
-      const filmsByNameParams = new URLSearchParams()
-      filmsByNameParams.append('limit', limit.toString())
-      filmsByNameParams.append('page', page.toString())
-      filmsByNameParams.append('query', filter.name)
-      filmsByNameIds = (await http.get('/v1.4/movie/search', { params: filmsByNameParams }))
-        .data.docs.map((d:any) => d.id)
-    }
+  public static async getFilms(limit: number, page: number, filter: Partial<FilmsFilterType>) {
+    // console.log(filter)
+    // let filmsByNameIds: number[] = []
+    // if (filter.name) {
+    //   const filmsByNameParams = new URLSearchParams()
+    //   filmsByNameParams.append('limit', limit.toString())
+    //   filmsByNameParams.append('page', page.toString())
+    //   filmsByNameParams.append('query', filter.name)
+    //   filmsByNameIds = (await http.get('/v1.4/movie/search', { params: filmsByNameParams }))
+    //     .data.docs.map((d:any) => d.id)
+    // }
     const resParams = new URLSearchParams()
-    filmsByNameIds.forEach((id) => {
-      resParams.append('id', id.toString())
-    })
+    // filmsByNameIds.forEach((id) => {
+    //   resParams.append('id', id.toString())
+    // })
 
     
     const filterToServer = FilmsAdapter.filmsFilterToServer(filter)
@@ -33,7 +33,6 @@ export default class FilmsAPI {
       }
     }
     
-    const res = await http.get('/v1.4/movie', { params: resParams })
-    console.log(res)
+    return http.get('/v1.4/movie', { params: resParams })
   }
 }

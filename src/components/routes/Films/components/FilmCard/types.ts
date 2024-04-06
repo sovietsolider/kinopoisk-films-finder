@@ -1,4 +1,7 @@
 export interface Film {
-  imgSrc: string,
+  poster: {
+    url: string,
+    previewUrl: string
+  },
   name: string
 }
