@@ -5,6 +5,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { outputConfig, copyPluginPatterns, scssConfig, entryConfig, terserPluginConfig } = require("./env.config");
+const { DefinePlugin } = require("webpack");
 
 module.exports = (env, options) => 
 {
@@ -89,6 +90,9 @@ module.exports = (env, options) =>
                 inject: true,
                 minify: false
             }),
+            new DefinePlugin({
+                'process.env.TOKEN': JSON.stringify(process.env.TOKEN),
+              }),
         ]
     };
 };

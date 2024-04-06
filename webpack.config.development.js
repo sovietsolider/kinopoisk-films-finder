@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { outputConfig, copyPluginPatterns, entryConfig, devServer } = require("./env.config");
+const { DefinePlugin } = require('webpack');
 
 module.exports = (env, options) => 
 {
@@ -83,6 +84,9 @@ module.exports = (env, options) =>
                 minify: false
             }),
             new CopyPlugin(copyPluginPatterns),
+            new DefinePlugin({
+                'process.env.TOKEN': JSON.stringify(process.env.TOKEN),
+              }),
         ]
     };
 };

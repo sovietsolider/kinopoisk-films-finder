@@ -21,6 +21,7 @@ $filter-gap: 10px;
 }
 
 .ant-select-selector {
+  box-shadow: unset !important;
   border-radius: 0 !important;
   border: none !important;
   border-bottom: 2px white solid !important;
@@ -35,16 +36,43 @@ $filter-gap: 10px;
   }
 }
 
+.ant-select-focused {
+  box-shadow: none !important;
+}
+
 .ant-select-arrow {
   color: white !important;
 }
 
 .ant-select-open .ant-select-selector {
-  border-color: #d9d9d9 !important;
   box-shadow: none !important;
 }
 
-.ant-input {
+.ant-input-number-input {
+  color: white !important;
+  padding-left: 0 !important;
+  &:focus {
+    background-color: transparent !important;
+  }
+}
+
+.ant-input-number-outlined {
+  background-color: unset !important;
+  border: 0 !important;
+  &:focus, &:hover {
+    border: unset;
+    box-shadow: unset;
+    background-color: unset;
+  }
+}
+
+.ant-input-number-focused {
+  border: unset !important;
+  box-shadow: unset !important;
+  background-color: unset !important;
+}
+
+.ant-input, .ant-input-number {
   padding-left: 0;
   background-color: unset;
   border: unset;

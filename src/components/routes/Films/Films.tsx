@@ -2,6 +2,7 @@ import FilmsFilter from '@/components/routes/Films/components/FilmsFilter/FilmsF
 import './Films.scss'
 import { Film } from './components/FilmCard/types'
 import FilmCard from './components/FilmCard/FilmCard'
+import React from 'react'
 
 
 export default function Films() {
@@ -36,7 +37,7 @@ export default function Films() {
       <FilmsFilter />
       <div className='films-list-container'>
         {films.map((film: Film, index: number) => (
-          <FilmCard imgSrc={film.imgSrc} name={film.name}/>
+          <FilmCard imgSrc={film.imgSrc} name={film.name} />
         ))}
       </div>
     </div>
