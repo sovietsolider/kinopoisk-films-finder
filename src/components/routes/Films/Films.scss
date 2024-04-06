@@ -4,7 +4,9 @@
 .films-list-container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  row-gap: 5px;
+  column-gap: 10px;
+  margin-bottom: 1rem;
 }
 
 .ant-pagination-item > * {

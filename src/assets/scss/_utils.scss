@@ -1,5 +1,7 @@
+$border-radius-1: 1rem;
+
 .rounded-border-1 {
-  border-radius: 1rem;
+  border-radius: $border-radius-1;
 }
 
 .m-auto {

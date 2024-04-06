@@ -9,7 +9,7 @@ export default function FilmCard({imgSrc, name}: {imgSrc: string, name: string})
   return (
     <div className="film-card">
       <img src={imgSrc} alt={name} className="film-image rounded-border-1" onLoad={() => setIsLoading(false)}/>
-      <div className="film-name text-white text-bold">
+      <div className="film-name text-white text-bold overlap-ellipsis-2">
         {name}
       </div>
     </div>

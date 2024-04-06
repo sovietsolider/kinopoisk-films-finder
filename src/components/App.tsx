@@ -17,8 +17,10 @@ export default function App() {
           },
           components: {
             Slider: {
-              
               handleLineWidth: 1
+            },
+            Modal: {
+              contentBg: `#100e19`
             }
           }
         }}

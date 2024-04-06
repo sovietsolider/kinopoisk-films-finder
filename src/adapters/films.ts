@@ -11,11 +11,12 @@ const sliderAdapter = (val: number[]) => {
 
 export class FilmsAdapter {
   public static filmsFilterToServer(filter: Partial<FilmsFilterType>): FilmsFilterToServer {
-    
+    console.log(filter)
     return {
       year: filter.year ? filter.year.toString() : null,
       ageRating: filter.ageRating ? sliderAdapter(filter.ageRating) : null,
-      'countries.name': filter.countries ? filter.countries?.name : null
+      'countries.name': filter.countries 
+        && filter.countries.length ? filter.countries : null
     }
   }
 }

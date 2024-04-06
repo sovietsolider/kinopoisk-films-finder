@@ -28,5 +28,11 @@ export async function fetchFilms(
   setFilms((await FilmsAPI.getFilms(limit, page, filterModel)).data.docs)
 }
 
+export const filmsFilter = atom({
+  key: 'filmsFilter',
+  default: {}
+})
+
+
 
 

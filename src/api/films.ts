@@ -20,11 +20,12 @@ export default class FilmsAPI {
     //   resParams.append('id', id.toString())
     // })
 
-    
+    resParams.append('limit', limit.toString())
+    resParams.append('page', page.toString())
     const filterToServer = FilmsAdapter.filmsFilterToServer(filter)
     for(const key of Object.keys(filterToServer)) {
-      if(filter[key]) {
-        resParams.append(key, filter[key])
+      if(filterToServer[key]) {
+        resParams.append(key, filterToServer[key])
       } 
     }
     if(filterToServer["countries.name"]) {
@@ -32,7 +33,7 @@ export default class FilmsAPI {
         resParams.append('countries.name', country)
       }
     }
-    
+    console.log('params', resParams)
     return http.get('/v1.4/movie', { params: resParams })
   }
 }

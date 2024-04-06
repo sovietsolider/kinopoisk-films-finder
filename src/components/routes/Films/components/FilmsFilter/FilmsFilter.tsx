@@ -21,9 +21,7 @@ export default function FilmsFilter({onFilterChanged}: {onFilterChanged: (filter
   const [model, setModel] = useState<FilmsFilterType>({
     year: null,
     ageRating: null,
-    countries: {
-      name: []
-    }
+    countries: []
   })
 
   const onModelChanged = useCallback(
@@ -55,10 +53,6 @@ export default function FilmsFilter({onFilterChanged}: {onFilterChanged: (filter
   }
 
   return <>
-    <div className='filter-container rounded-border-1'>
-      <div className='text-white form-label text-bold '>Название</div>
-      <Input placeholder="Введите название..." onChange={(e) => setNameToFind(e.target.value)}/>
-    </div>
     <div className="filter-container rounded-border-1">
       <div className="filter-inner">
         <div className='filter-item'>
