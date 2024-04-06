@@ -6,13 +6,15 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import { dictCountries, setDictCountries } from '@/store'
 import DictsAPI from '@/api/dicts'
 import { LoadingOutlined } from '@ant-design/icons';
+import FilmsAPI from '@/api/films'
 
 export default function FilmsFilter() {
   const [countries, setCountries] = useRecoilState(dictCountries)
 
   const [model, setModel] = useState<FilmsFilter>({
-    year: [],
-    ageRating: [],
+    name: null,
+    year: null,
+    ageRating: null,
     countries: {
       name: []
     }
@@ -20,6 +22,7 @@ export default function FilmsFilter() {
 
   useEffect(() => {
     setDictCountries(countries, setCountries)
+    FilmsAPI.getFilms(10, 2, {name: 'Звездные войны'})
   })
 
   const notFoundContentNode = () => {
@@ -54,8 +57,9 @@ export default function FilmsFilter() {
             options={countries}
           />
         </div>
-        <div className='filter-item' style={{borderBottom: '2px solid white'}}>
-          <div className='text-white form-label text-bold '>Возрастной рейтинг</div>
+        <div className='filter-item' >
+          <div className='text-white form-label text-bold text-nowrap'>Возрастной рейтинг</div>
+          <div style={{borderBottom: '2px solid white', position: 'relative', top: '30px'}}></div>
           <Slider min={0} max={21} range defaultValue={[0, 21]} />
           {/* <Select
             mode="multiple"

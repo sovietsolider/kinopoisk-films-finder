@@ -1,0 +1,39 @@
+import { FilmsFilter } from "@/components/routes/Films/components/FilmsFilter/types";
+import { http } from "./httpAxios";
+import _ from 'lodash'
+import { FilmsAdapter } from "@/adapters/films";
+
+export default class FilmsAPI {
+  public static async getFilms(limit: number, page: number, filter: FilmsFilter) {
+    console.log(filter)
+    let filmsByNameIds: number[] = []
+    if (filter.name) {
+      const filmsByNameParams = new URLSearchParams()
+      filmsByNameParams.append('limit', limit.toString())
+      filmsByNameParams.append('page', page.toString())
+      filmsByNameParams.append('query', filter.name)
+      filmsByNameIds = (await http.get('/v1.4/movie/search', { params: filmsByNameParams }))
+        .data.docs.map((d:any) => d.id)
+    }
+    const resParams = new URLSearchParams()
+    filmsByNameIds.forEach((id) => {
+      resParams.append('id', id.toString())
+    })
+
+    
+    const filterToServer = FilmsAdapter.filmsFilterToServer(filter)
+    for(const key of Object.keys(filterToServer)) {
+      if(filter[key]) {
+        resParams.append(key, filter[key])
+      } 
+    }
+    if(filterToServer["countries.name"]) {
+      for(const country of filterToServer["countries.name"]) {
+        resParams.append('countries.name', country)
+      }
+    }
+    
+    const res = await http.get('/v1.4/movie', { params: resParams })
+    console.log(res)
+  }
+}
