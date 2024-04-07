@@ -2,6 +2,7 @@ import { FilmsFilterType } from "@/components/routes/Films/components/FilmsFilte
 import { http } from "./httpAxios";
 import _ from 'lodash'
 import { FilmsAdapter } from "@/adapters/films";
+import { FilmImagesTypes } from "@/types/dicts";
 
 export default class FilmsAPI {
   public static async getFilms(limit: number, page: number, filter: Partial<FilmsFilterType>) {
@@ -32,10 +33,7 @@ export default class FilmsAPI {
   }
 
   public static async getFilmImages(id: number, 
-    type: 'backdrops' | 'cover' 
-    | 'frame' | 'promo' 
-    | 'screenshot' | 'shooting' 
-    | 'still' | 'wallpaper',
+    type: FilmImagesTypes,
     limit: number,
     page: number,
   ) {

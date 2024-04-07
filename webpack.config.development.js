@@ -23,6 +23,10 @@ module.exports = (env, options) =>
                     exclude: /node_modules/,
                 },
                 {
+                    test: /\.css$/i,
+                    use: ["style-loader", "css-loader"],
+                  },
+                {
                     test: /\.scss$/,
                     use: [
                         // We're in dev and want HMR, SCSS is handled in JS

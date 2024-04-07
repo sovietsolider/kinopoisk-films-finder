@@ -53,7 +53,7 @@ export default function FindByNameModal({ opened, onModalClose }: { opened: bool
       onCancel={() => onModalClose()}
     >
       <div className="content-container">
-        <div className="title-2 text-bold text-white modal-title">
+        <div className="title-1 text-bold text-white modal-title">
           Поиск
         </div>
         <Input className="name-input" placeholder="Введите название..." value={name} onChange={(e) => setName(e.target.value)} />

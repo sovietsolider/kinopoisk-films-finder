@@ -1,11 +1,65 @@
+@import '~@/assets/scss/_colors.scss';
+
+
 .film-title {  
   &-container {
     display: flex;
-    justify-content: space-around;
+    background-color: $secondary-bg;
+    border-radius: 1rem;
+    padding: 2rem;
+    gap: 1rem;
   }
 
   &-image {
-    max-height: 1000px;
-    max-width: 100%;
+    max-width: 30%;
+    object-fit: cover ;
+  }
+
+  &-name {
+    text-align: center;
+    &-container {
+      width: calc(70% - 1rem) ;
+      //padding: 0 1rem;
+    }
+    &-description {
+      margin: 1rem 0;
+    }
+    &-rating-container {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    &-rating-inner {
+      display: flex;
+      gap: 1rem;
+      align-items: center
+    }
+    &-authors-slider-container {
+      padding: 0 2rem;
+      img {
+        max-width: 100%;
+        height: 160px;
+      }
+      
+    }
   }
 }
+
+.carousel-image-container {
+  margin: 0.5rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  * {
+    text-align: center;
+  }
+}
+
+.carousel-dots {
+  bottom: -12px !important;
+}
+
+#actors-title {
+  margin-bottom: 0.5rem;
+}
+
