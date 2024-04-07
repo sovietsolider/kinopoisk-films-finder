@@ -6,6 +6,7 @@ import './Film.scss'
 import { Carousel } from "antd"
 import { FilmImagesTypes } from "@/types/dicts"
 import Slider from "react-slick"
+import Seasons from "../Seasons/Seasons"
 
 export default function Film() {
   const postersLimit = 5
@@ -119,9 +120,11 @@ export default function Film() {
               </div>
             ))}
           </Slider>
-
         </div>
       </div>
+    </div>
+    <div className="film-seasons-container">
+      <Seasons seasons={seasons}/>
     </div>
 
     {/* <Carousel

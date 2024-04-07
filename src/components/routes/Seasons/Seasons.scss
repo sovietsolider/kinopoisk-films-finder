@@ -1,0 +1,28 @@
+@import '~@/assets/scss/_colors.scss';
+
+
+.seasons {
+  &-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  &-pagination-list {
+    display: flex;
+    gap: 1rem;
+  }
+  &-pagination-item {
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    cursor: pointer;
+    padding: 0.3rem;
+    width: 1rem;
+    text-align: center;
+    border: 2px solid white;
+    border-radius: 0.5rem;
+    &-active {
+      border-color: $primary;
+    }
+  }
+}
