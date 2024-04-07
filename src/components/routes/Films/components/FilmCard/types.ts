@@ -1,5 +1,6 @@
 export interface FilmType {
   id: number
+  isSeries: boolean
   poster: {
     url: string
     previewUrl: string

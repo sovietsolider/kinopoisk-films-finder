@@ -2,16 +2,18 @@ import FilmsFilter from '@/components/routes/Films/components/FilmsFilter/FilmsF
 import './Films.scss'
 import { FilmType } from './components/FilmCard/types'
 import FilmCard from './components/FilmCard/FilmCard'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useRecoilState } from 'recoil'
-import { fetchFilms, filmsFilter, foundFilms } from '@/store'
 import { FilmsFilterType } from './components/FilmsFilter/types'
 import { Pagination, PaginationProps, Skeleton } from 'antd'
 import { storedCurrentPage, storedElementsPerPage } from '@/store/filmsPagination'
 import { useNavigate } from 'react-router-dom'
+import _ from 'lodash'
+import FilmsAPI from '@/api/films'
+import { filmsFilter } from '@/store'
 
 interface FilmsGridProps {
-  isLoading: boolean, 
+  isLoading: boolean,
   films: any[],
   currentPage: number,
   elementsPerPage: number,
@@ -20,11 +22,11 @@ interface FilmsGridProps {
 }
 
 export function FilmsGrid({
-  isLoading, 
-  films, 
-  currentPage, 
+  isLoading,
+  films,
+  currentPage,
   elementsPerPage,
-  pages, 
+  pages,
   onPaginationChanged
 }: FilmsGridProps) {
   const navigate = useNavigate()
@@ -34,10 +36,10 @@ export function FilmsGrid({
       {
         isLoading ? <Skeleton active={true}></Skeleton> :
           films.map((film: FilmType, index: number) => (
-            <FilmCard 
-              imgSrc={film.poster?.previewUrl ?? null} 
-              name={film?.name ?? ''} 
-              id={film.id} 
+            <FilmCard
+              imgSrc={film.poster?.previewUrl ?? null}
+              name={film?.name ?? ''}
+              id={film.id}
               onCardClick={(id) => navigate(`/films/${id}`)}
             />
           ))
@@ -50,7 +52,7 @@ export function FilmsGrid({
         pageSize={elementsPerPage}
         onChange={onPaginationChanged}
         defaultCurrent={1}
-        total={pages*elementsPerPage}
+        total={pages * elementsPerPage}
         locale={{ items_per_page: "элементов" }}
         pageSizeOptions={[10, 20, 50, 100]}
       />
@@ -60,22 +62,31 @@ export function FilmsGrid({
 
 
 export function Films() {
-  const [films, setFilms] = useRecoilState(foundFilms)
+  //const [films, setFilms] = useRecoilState(foundFilms)
+  const [films, setFilms] = useState<{docs: FilmType[], pages: number}>({docs: [], pages: 0})
   const [isLoading, setIsLoading] = useState(true)
   const [currentPage, setCurrentPage] = useRecoilState(storedCurrentPage)
   const [elementsPerPage, setElementsPerPage] = useRecoilState(storedElementsPerPage)
   const [storedFilmsFilter, setStoredFilmsFilter] = useRecoilState(filmsFilter)
   const [isFirstRender, setIsFirstRender] = useState(true)
+  const cachedPages = useRef<{[k:string]: {docs: never[], pages: number}}>({})
 
   const getFilms = async (filter: FilmsFilterType) => {
-    console.log('getFilms', elementsPerPage, currentPage)
     setIsLoading(true)
-    await fetchFilms(films, setFilms, elementsPerPage, currentPage, filter)
+
+    if (cachedPages.current[currentPage]) {
+      setFilms(cachedPages.current[currentPage])
+    } else {
+      const res = (await FilmsAPI.getFilms(elementsPerPage, currentPage, filter)).data
+      setFilms({docs: res.docs, pages: res.pages})
+      cachedPages.current[currentPage] = {docs: res.docs, pages: res.pages}
+    }
+
     setIsLoading(false)
   }
 
   const onFilterChanged = async (filter: FilmsFilterType) => {
-    console.log('onFilterChanged')
+    cachedPages.current = {}
     setCurrentPage(1)
     setStoredFilmsFilter(filter)
     //await getFilms(filter)
@@ -98,12 +109,12 @@ export function Films() {
     <div className='films-container'>
       <FilmsFilter onFilterChanged={onFilterChanged} />
 
-      <FilmsGrid 
-        currentPage={currentPage} 
-        elementsPerPage={elementsPerPage} 
+      <FilmsGrid
+        currentPage={currentPage}
+        elementsPerPage={elementsPerPage}
         films={films.docs}
-        pages={films.pages} 
-        isLoading={isLoading} 
+        pages={films.pages}
+        isLoading={isLoading}
         onPaginationChanged={onPaginationChanged}
       />
     </div>

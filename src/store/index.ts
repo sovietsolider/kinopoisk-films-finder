@@ -20,24 +20,6 @@ export function setDictCountries(countries: never[], setCountries: SetterOrUpdat
   }
 }
 
-export const foundFilms = atom({
-  key: 'foundFilms',
-  default: {
-    docs: [],
-    pages: 0
-  }
-})
-
-export async function fetchFilms(
-  state: FilmsFromServer, 
-  setFilms: SetterOrUpdater<FilmsFromServer>, 
-  limit: number, page: number, 
-  filterModel: FilmsFilterType
-) {
-  const films = (await FilmsAPI.getFilms(limit, page, filterModel)).data
-  setFilms({docs: films.docs, pages: films.pages})
-}
-
 export const filmsFilter = atom({
   key: 'filmsFilter',
   default: {}

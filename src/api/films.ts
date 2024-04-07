@@ -39,4 +39,8 @@ export default class FilmsAPI {
   ) {
     return http.get(`/v1.4/image?limit=${limit}&page=${page}&type=${type}&movieId=${id}`)
   }
+  
+  public static async getFilmSeasons(id: number, limit: number, page: number) {
+    return http.get(`/v1.4/season?limit=${limit}&page=${page}&movieId=${id}&sortField=number&sortType=1`)
+  }
 }

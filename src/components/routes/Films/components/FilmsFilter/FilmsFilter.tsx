@@ -3,7 +3,7 @@ import './FilmsFilter.scss'
 import { FilmsFilterType } from './types'
 import { Form, Input, InputNumber, Select, Slider, Spin } from 'antd'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { dictCountries, fetchFilms, foundFilms, setDictCountries } from '@/store'
+import { dictCountries, setDictCountries } from '@/store'
 import DictsAPI from '@/api/dicts'
 import { LoadingOutlined } from '@ant-design/icons';
 import FilmsAPI from '@/api/films'
@@ -12,7 +12,6 @@ import _ from 'lodash'
 
 export default function FilmsFilter({onFilterChanged}: {onFilterChanged: (filterModel: FilmsFilterType) => void}) {
   const [countries, setCountries] = useRecoilState(dictCountries)
-  const [films, setFilms] = useRecoilState(foundFilms)
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [nameToFind, setNameToFind] = useState<string | null>(null)

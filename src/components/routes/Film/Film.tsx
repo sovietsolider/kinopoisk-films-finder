@@ -9,10 +9,13 @@ import Slider from "react-slick"
 
 export default function Film() {
   const postersLimit = 5
+  const seasonsLimit = 1
   const params = useParams()
   const [film, setFilm] = useState<Partial<FilmType>>({})
   const [posters, setPosters] = useState([])
   const [currentPostersPage, setCurrentPostersPage] = useState(1)
+  const [currentSeasonsPage, setCurrentSeasonsPage] = useState(1)
+  const [seasons, setSeasons] = useState({docs: [], pages: 0})
 
   let sliderRef = useRef(null);
 
@@ -24,11 +27,17 @@ export default function Film() {
     setPosters((await FilmsAPI.getFilmImages(id, type, limit, page)).data.docs)
   }
 
+  const fetchSeasons = async (id: number, limit: number, page: number) => {
+    const seasons = (await FilmsAPI.getFilmSeasons(id, limit, page)).data
+    setSeasons({docs: seasons.docs, pages: seasons.pages})
+  }
+
 
   useEffect(() => {
     fetchFilm(Number(params.id))
     fetchPosters(Number(params.id), 'backdrops', postersLimit, currentPostersPage)
-  }, [])
+    fetchSeasons(Number(params.id), seasonsLimit, currentSeasonsPage)
+  }, [params])
 
 
   const beforeChange = (currentSlide: number, nextSlide: number) => {
@@ -59,7 +68,6 @@ export default function Film() {
   const authorSliderOptions = {
     slidesToShow: 5,
     slidesToScroll: 5,
-    centerMode: true,
   }
 
   return <div className="film-container text-white">
