@@ -24,6 +24,21 @@ export default class FilmsAPI {
   }
 
   public static async getFilmsByName(name: string, limit: number, page: number) {
-    return http.get(`/v1.4/movie/search?query=${name}?limit=${limit}?page=${page}`)
+    return http.get(`/v1.4/movie/search?query=${name}&limit=${limit}&page=${page}`)
+  }
+
+  public static async getFilmById(id: number) {
+    return http.get(`/v1.4/movie/${id}`)
+  }
+
+  public static async getFilmImages(id: number, 
+    type: 'backdrops' | 'cover' 
+    | 'frame' | 'promo' 
+    | 'screenshot' | 'shooting' 
+    | 'still' | 'wallpaper',
+    limit: number,
+    page: number,
+  ) {
+    return http.get(`/v1.4/image?limit=${limit}&page=${page}&type=${type}&movieId=${id}`)
   }
 }

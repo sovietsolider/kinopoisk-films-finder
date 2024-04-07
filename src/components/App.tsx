@@ -2,7 +2,7 @@ import { router } from '@/router/index'
 import { RouterProvider } from 'react-router-dom/dist/index'
 import { ConfigProvider } from 'antd'
 import { RecoilRoot } from 'recoil'
-import React from 'react'
+
 
 
 

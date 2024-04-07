@@ -2,16 +2,31 @@
 @import '~@/assets/scss/_utils.scss';
 
 .ant-modal {
-  max-width: 100vw !important;
+  //max-width: 100vw !important;
   border-radius: $border-radius-1;
   top: 50px !important;
-  box-shadow: none;
+  //box-shadow: none;
+  width: 1300px !important;
+  min-width: 0 !important;
+}
+
+.ant-modal-mask {
+  background-color: $primary-bg !important;
 }
 
 .ant-modal-content {
   padding: 2rem !important;
 }
 
+.ant-modal-close-x {
+  color: white !important;
+  font-size: 1.5rem !important;
+}
+
 .modal-title {
+  margin-bottom: 1rem;
+}
+
+.name-input {
   margin-bottom: 1rem;
 }

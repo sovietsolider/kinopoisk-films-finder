@@ -1,0 +1,11 @@
+.film-title {  
+  &-container {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  &-image {
+    max-height: 1000px;
+    max-width: 100%;
+  }
+}

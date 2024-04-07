@@ -1,4 +1,5 @@
-export interface Film {
+export interface FilmType {
+  id: number
   poster: {
     url: string,
     previewUrl: string

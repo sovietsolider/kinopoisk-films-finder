@@ -29,6 +29,6 @@ export default function Navbar() {
         </div>
       </div>
     </div>
-    <FindByNameModal opened={findByNameModalOpened}/>
+    <FindByNameModal opened={findByNameModalOpened} onModalClose={() => setFindByNameModalOpened(false)}/>
   </>
 }

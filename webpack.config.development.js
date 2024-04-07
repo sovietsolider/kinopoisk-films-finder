@@ -2,7 +2,8 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { outputConfig, copyPluginPatterns, entryConfig, devServer } = require("./env.config");
-const { DefinePlugin } = require('webpack');
+const { DefinePlugin, ProvidePlugin } = require('webpack');
+require('dotenv').config();
 
 module.exports = (env, options) => 
 {
@@ -69,7 +70,7 @@ module.exports = (env, options) =>
         resolve: { 
             extensions: [".tsx", ".ts", ".js"],
             alias: {
-                '@': path.resolve(__dirname, 'src')
+                '@': path.resolve(__dirname, 'src'),
             }
         },
         output: {
@@ -84,9 +85,14 @@ module.exports = (env, options) =>
                 minify: false
             }),
             new CopyPlugin(copyPluginPatterns),
+            new ProvidePlugin({
+                process: 'process/browser',
+            }),
             new DefinePlugin({
                 'process.env.TOKEN': JSON.stringify(process.env.TOKEN),
-              }),
+                'process.env.NO_POSTER_URL': JSON.stringify(process.env.NO_POSTER_URL) 
+
+            }),            
         ]
     };
 };

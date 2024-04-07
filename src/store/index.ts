@@ -5,6 +5,11 @@ import { FilmsFilterType } from "@/components/routes/Films/components/FilmsFilte
 import { CountryServer } from "@/types/dicts";
 import { atom, selector, SetterOrUpdater } from "recoil";
 
+export interface FilmsFromServer {
+  docs: never[];
+  pages: number;
+}
+
 export const dictCountries = atom({
   key: 'dictCountries',
   default: []
@@ -17,15 +22,20 @@ export function setDictCountries(countries: never[], setCountries: SetterOrUpdat
 
 export const foundFilms = atom({
   key: 'foundFilms',
-  default: []
+  default: {
+    docs: [],
+    pages: 0
+  }
 })
+
 export async function fetchFilms(
-  state: never[], 
-  setFilms: SetterOrUpdater<never[]>, 
+  state: FilmsFromServer, 
+  setFilms: SetterOrUpdater<FilmsFromServer>, 
   limit: number, page: number, 
   filterModel: FilmsFilterType
 ) {
-  setFilms((await FilmsAPI.getFilms(limit, page, filterModel)).data.docs)
+  const films = (await FilmsAPI.getFilms(limit, page, filterModel)).data
+  setFilms({docs: films.docs, pages: films.pages})
 }
 
 export const filmsFilter = atom({
