@@ -7,6 +7,8 @@ import { Carousel } from "antd"
 import { FilmImagesTypes } from "@/types/dicts"
 import Slider from "react-slick"
 import Seasons from "../Seasons/Seasons"
+import { CachedPages } from "@/types/common"
+import _ from 'lodash'
 
 export default function Film() {
   const postersLimit = 5
@@ -17,6 +19,7 @@ export default function Film() {
   const [currentPostersPage, setCurrentPostersPage] = useState(1)
   const [currentSeasonsPage, setCurrentSeasonsPage] = useState(1)
   const [seasons, setSeasons] = useState({docs: [], pages: 0})
+  const cachedSeasonsPages = useRef<CachedPages>({})
 
   let sliderRef = useRef(null);
 
@@ -29,12 +32,20 @@ export default function Film() {
   }
 
   const fetchSeasons = async (id: number, limit: number, page: number) => {
-    const seasons = (await FilmsAPI.getFilmSeasons(id, limit, page)).data
-    setSeasons({docs: seasons.docs, pages: seasons.pages})
+    console.log(_.cloneDeep(cachedSeasonsPages))
+    if(cachedSeasonsPages.current[page]) {
+      setSeasons(cachedSeasonsPages.current[page])
+    }
+    else {
+      const seasons = (await FilmsAPI.getFilmSeasons(id, limit, page)).data
+      setSeasons({docs: seasons.docs, pages: seasons.pages})
+      cachedSeasonsPages.current[page] = {docs: seasons.docs, pages: seasons.pages}
+    }
   }
 
 
   useEffect(() => {
+    cachedSeasonsPages.current = {}
     fetchFilm(Number(params.id))
     fetchPosters(Number(params.id), 'backdrops', postersLimit, currentPostersPage)
     fetchSeasons(Number(params.id), seasonsLimit, currentSeasonsPage)
@@ -124,7 +135,7 @@ export default function Film() {
       </div>
     </div>
     <div className="film-seasons-container">
-      <Seasons seasons={seasons}/>
+      <Seasons seasons={seasons} onSeasonPageChanged={(page: number) => fetchSeasons(Number(params.id), seasonsLimit, page)}/>
     </div>
 
     {/* <Carousel
