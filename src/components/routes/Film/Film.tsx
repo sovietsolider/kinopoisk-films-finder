@@ -6,20 +6,24 @@ import './Film.scss'
 import { Carousel } from "antd"
 import { FilmImagesTypes } from "@/types/dicts"
 import Slider from "react-slick"
-import Seasons from "../Seasons/Seasons"
-import { CachedPages } from "@/types/common"
+import { CachedPages, CommonServerPaginationResponse } from "@/types/common"
 import _ from 'lodash'
+import { PosterType, SeasonType } from "./types"
+import PaginatedSlider from "./components/PaginatedSlider/PaginatedSlider"
 
 export default function Film() {
-  const postersLimit = 5
+  const postersLimit = 6
   const seasonsLimit = 1
+  
   const params = useParams()
   const [film, setFilm] = useState<Partial<FilmType>>({})
-  const [posters, setPosters] = useState([])
+  const [posters, setPosters] = useState<CommonServerPaginationResponse<any>>({docs: [], pages: 0})
   const [currentPostersPage, setCurrentPostersPage] = useState(1)
   const [currentSeasonsPage, setCurrentSeasonsPage] = useState(1)
-  const [seasons, setSeasons] = useState({docs: [], pages: 0})
-  const cachedSeasonsPages = useRef<CachedPages>({})
+  const [currentPosterPage, setCurrentPosterPage] = useState(1)
+  const [seasons, setSeasons] = useState<CommonServerPaginationResponse<SeasonType>>({docs: [], pages: 0})
+  const cachedSeasonsPages = useRef<CachedPages<SeasonType>>({})
+  const cachedPostersPages = useRef<CachedPages<PosterType>>({})
 
   let sliderRef = useRef(null);
 
@@ -28,7 +32,14 @@ export default function Film() {
   }
 
   const fetchPosters = async (id: number, type: FilmImagesTypes, limit: number, page: number) => {
-    setPosters((await FilmsAPI.getFilmImages(id, type, limit, page)).data.docs)
+    if(cachedPostersPages.current[page]) {
+      setPosters(cachedPostersPages.current[page])
+    }
+    else {
+      const posters = (await FilmsAPI.getFilmImages(id, type, limit, page)).data
+      setPosters({docs: posters.docs, pages: posters.pages})
+      cachedPostersPages.current[page] = {docs: posters.docs, pages: posters.pages}
+    }
   }
 
   const fetchSeasons = async (id: number, limit: number, page: number) => {
@@ -47,7 +58,7 @@ export default function Film() {
   useEffect(() => {
     cachedSeasonsPages.current = {}
     fetchFilm(Number(params.id))
-    fetchPosters(Number(params.id), 'backdrops', postersLimit, currentPostersPage)
+    fetchPosters(Number(params.id), 'frame', postersLimit, currentPostersPage)
     fetchSeasons(Number(params.id), seasonsLimit, currentSeasonsPage)
   }, [params])
 
@@ -135,7 +146,27 @@ export default function Film() {
       </div>
     </div>
     <div className="film-seasons-container">
-      <Seasons seasons={seasons} onSeasonPageChanged={(page: number) => fetchSeasons(Number(params.id), seasonsLimit, page)}/>
+      <PaginatedSlider  
+        pages={seasons.pages} 
+        data={seasons.docs[0]?.episodes ?? []} 
+        onPageChanged={(page: number) => fetchSeasons(Number(params.id), seasonsLimit, page)}
+        imageUrlGetter={(d: any) => d.still.previewUrl}
+        sliderOptions={{slidesToShow: 5, slidesToScroll: 5, infinite: false}}
+      >
+        Сезоны
+      </PaginatedSlider>
+    </div>
+    <div className="film-posters-container">
+      <PaginatedSlider 
+        pages={posters.pages} 
+        data={posters.docs ?? []} 
+        onPageChanged={(page: number) => fetchPosters(Number(params.id), 'still', postersLimit, page)}
+        imageUrlGetter={(d: any) => d.url}
+        sliderOptions={{slidesToShow: 2, slidesToScroll: 2, infinite: false}}
+        imageClass="film-posters-image"
+      >
+        Кадры из фильма
+      </PaginatedSlider>
     </div>
 
     {/* <Carousel

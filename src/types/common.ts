@@ -1,7 +1,7 @@
-export interface CommonServerPaginationResponse {
-  docs: never[], pages: number
+export interface CommonServerPaginationResponse<T> {
+  docs: T[], pages: number
 }
 
-export interface CachedPages {
-  [k:string]: CommonServerPaginationResponse
+export interface CachedPages<T> {
+  [k:string]: CommonServerPaginationResponse<T>
 }
