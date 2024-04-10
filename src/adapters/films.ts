@@ -1,6 +1,9 @@
 import { FilmsFilterType, FilmsFilterToServer } from "@/components/routes/Films/components/FilmsFilter/types";
 
 const sliderAdapter = (val: number[]) => {
+  if(!val.length) {
+    return null
+  }
   if (val[0] !== val[1]) {
     return `${val[0]}-${val[1]}`
   } else {
@@ -10,13 +13,12 @@ const sliderAdapter = (val: number[]) => {
 
 
 export class FilmsAdapter {
-  public static filmsFilterToServer(filter: Partial<FilmsFilterType>): FilmsFilterToServer {
-    console.log(filter)
+  public static filmsFilterToServer(filter: FilmsFilterType): FilmsFilterToServer {
     return {
       year: filter.year ? filter.year.toString() : null,
-      ageRating: filter.ageRating ? sliderAdapter(filter.ageRating) : null,
-      'countries.name': filter.countries 
-        && filter.countries.length ? filter.countries : null
+      ageRating: sliderAdapter(filter.ageRating),
+      'countries.name': (filter.countries 
+        && filter.countries.length) ? filter.countries : null
     }
   }
 }

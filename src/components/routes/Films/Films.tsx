@@ -9,6 +9,7 @@ import { Pagination, PaginationProps, Skeleton } from 'antd'
 import { storedFilms, storedCurrentPage, storedElementsPerPage } from '@/store/filmsPagination'
 import { useNavigate } from 'react-router-dom'
 import _ from 'lodash'
+import { difference } from '@/utils/deep-compare'
 import FilmsAPI from '@/api/films'
 import { filmsFilter } from '@/store'
 
@@ -86,20 +87,23 @@ export function Films() {
   }
 
   const onFilterChanged = async (filter: FilmsFilterType) => {
-    console.log('filter changed')
+    console.log(_.cloneDeep(storedFilmsFilter), _.cloneDeep(filter))
     cachedPages.current = {}
-    setCurrentPage(1)
-    setStoredFilmsFilter(filter)
-    //await getFilms(filter)
+    console.log(difference(_.cloneDeep(storedFilmsFilter), _.cloneDeep(filter)))
+    if(!_.isEmpty(difference(_.cloneDeep(storedFilmsFilter), _.cloneDeep(filter)))) {
+      setCurrentPage(1)
+      setStoredFilmsFilter(filter)
+    }
+    await getFilms(filter)
   }
 
   useEffect(() => {
-    console.log('gettings', _.cloneDeep(storedFilmsFilter))
-    getFilms(storedFilmsFilter as FilmsFilterType)
+    console.log('root')
     if (isFirstRender.current) {
       isFirstRender.current = false
+    } else {
+      getFilms(storedFilmsFilter as FilmsFilterType)
     }
-    console.log(...Object.keys(storedFilmsFilter).map((key) => storedFilmsFilter[key]))
   }, [...Object.keys(storedFilmsFilter).map((key) => storedFilmsFilter[key]), elementsPerPage, currentPage])
 
   const onPaginationChanged: PaginationProps['onChange'] = (page, pageSize) => {
@@ -108,7 +112,6 @@ export function Films() {
   }
 
   return (<>
-  {JSON.stringify(storedFilmsFilter)}
     <div className='films-container'>
       <FilmsFilter value={storedFilmsFilter} onFilterChanged={onFilterChanged} />
 

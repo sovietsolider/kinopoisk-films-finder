@@ -5,12 +5,12 @@ import { FilmsAdapter } from "@/adapters/films";
 import { FilmImagesTypes } from "@/types/dicts";
 
 export default class FilmsAPI {
-  public static async getFilms(limit: number, page: number, filter: Partial<FilmsFilterType>) {
+  public static async getFilms(limit: number, page: number, filter: FilmsFilterType) {
     const resParams = new URLSearchParams()
     resParams.append('limit', limit.toString())
     resParams.append('page', page.toString())
     const filterToServer = FilmsAdapter.filmsFilterToServer(filter)
-    for(const key of Object.keys(filterToServer)) {
+    for(const key of _.remove(Object.keys(filterToServer), 'countries.name')) {
       if(filterToServer[key]) {
         resParams.append(key, filterToServer[key])
       } 
@@ -20,7 +20,6 @@ export default class FilmsAPI {
         resParams.append('countries.name', country)
       }
     }
-    console.log('params', resParams)
     return http.get('/v1.4/movie', { params: resParams })
   }
 

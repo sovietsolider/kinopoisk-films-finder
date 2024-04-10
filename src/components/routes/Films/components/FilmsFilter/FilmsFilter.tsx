@@ -21,24 +21,25 @@ export default function FilmsFilter(
 
   const [model, setModel] = useState<FilmsFilterType>({
     year: null,
-    ageRating: null,
+    ageRating: [],
     countries: []
   })
 
   const onModelChanged = useCallback(
     _.debounce(async (model: FilmsFilterType) => {
       onFilterChanged(model)
+      console.log('debounce')
     }, 1000), []
   )
+  
   useEffect(() => {
-    setModel(value)
-    onModelChanged(model)
-    // if(isFirstRender.current) {
-    //   //setModel(value)
-    //   isFirstRender.current = false
-    // } else {
-    //   onModelChanged(model)
-    // }
+    console.log('filter',_.cloneDeep(value), isFirstRender.current)
+    if(isFirstRender.current) {
+      setModel(value)
+      isFirstRender.current = false
+    } else {
+      onModelChanged(model)
+    }
   }, [model])
 
   useEffect(() => {
@@ -60,15 +61,17 @@ export default function FilmsFilter(
   }
 
   return <>
+  {JSON.stringify(model)}
     <div className="filter-container rounded-border-1">
       <div className="filter-inner">
         <div className='filter-item'>
           <div className='text-white form-label text-bold '>Год</div>
-          <InputNumber style={{width: '100%'}}  min={1850} placeholder="Введите год..." onChange={(val:any) => setModel({...model, year: val})}/>
+          <InputNumber style={{width: '100%'}} value={model.year} min={1850} placeholder="Введите год..." onChange={(val:any) => setModel({...model, year: val})}/>
         </div>
         <div className='filter-item'>
           <div className='text-white form-label text-bold '>Страна</div>
           <Select
+            value={model.countries}
             mode="multiple"
             placeholder="Выберите страну"
             notFoundContent={notFoundContentNode()}
@@ -80,7 +83,7 @@ export default function FilmsFilter(
         <div className='filter-item' >
           <div className='text-white form-label text-bold text-nowrap'>Возрастной рейтинг</div>
           <div style={{borderBottom: '2px solid white', position: 'relative', top: '30px'}}></div>
-          <Slider min={0} max={18} range defaultValue={[0, 18]} onChangeComplete={(val: number[]) => setModel({...model, ageRating: val})}/>
+          <Slider min={0} max={18} value={model.ageRating} range defaultValue={[0, 18]} onChangeComplete={(val: number[]) => setModel({...model, ageRating: val})}/>
         </div>
       </div>
     </div>

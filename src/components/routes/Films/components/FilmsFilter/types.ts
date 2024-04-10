@@ -1,7 +1,7 @@
 export interface FilmsFilterType {
   [k: string]: any,
   year: number | null,
-  ageRating: number[] | null,
+  ageRating: number[],
   countries: string[] | null
 }
 

@@ -52,7 +52,6 @@ export default function Film() {
   }
 
   const fetchSeasons = async (id: number, limit: number, page: number) => {
-    console.log(_.cloneDeep(cachedSeasonsPages))
     if (cachedSeasonsPages.current[page]) {
       setSeasons(cachedSeasonsPages.current[page])
     }
@@ -64,7 +63,6 @@ export default function Film() {
   }
 
   const fetchReviews = async (id: number, limit: number, page: number) => {
-    console.log(_.cloneDeep(cachedSeasonsPages))
     if (cachedReviewsPages.current[page]) {
       setReviews(cachedReviewsPages.current[page])
     }
@@ -93,7 +91,6 @@ export default function Film() {
 
 
   const beforeChange = (currentSlide: number, nextSlide: number) => {
-    console.log(currentSlide, nextSlide)
     // if (nextSlide === 4) {
     //   setTiles([...tiles, ...newTiles]);
     //   setTimeout(() => (sliderRef.current as any).goTo(5), 0);
@@ -217,7 +214,7 @@ export default function Film() {
           <PaginatedSlider
             pages={0}
             data={film.similarMovies}
-            onItemClick={(item: FilmType['similarMovies'][number]) => {console.log(item);navigate(`/films/${item.id}`)}}
+            onItemClick={(item: FilmType['similarMovies'][number]) => {navigate(`/films/${item.id}`)}}
             imageUrlGetter={(d: any) => d.poster.previewUrl}
             itemClass="cursor-pointer"
             imageClass="paginated-slider-carousel-image film-similar-movies-image"
