@@ -1,3 +1,5 @@
+import { FilmType } from "@/components/routes/Film/types";
+import { CommonServerPaginationResponse } from "@/types/common";
 import { atom } from "recoil";
 
 export const storedCurrentPage = atom({
@@ -8,4 +10,9 @@ export const storedCurrentPage = atom({
 export const storedElementsPerPage = atom({
   key: 'elementPerPage',
   default: 10
+})
+
+export const storedFilms = atom<CommonServerPaginationResponse<FilmType>>({
+  key: 'lastFilms',
+  default: {docs: [], pages: 0}
 })

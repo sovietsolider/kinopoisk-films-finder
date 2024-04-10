@@ -7,10 +7,14 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
+    &-text {
+      text-wrap: nowrap;
+    }
   }
   &-pagination-list {
     display: flex;
     gap: 1rem;
+    flex-wrap: wrap;
   }
   &-pagination-item {
     user-select: none;

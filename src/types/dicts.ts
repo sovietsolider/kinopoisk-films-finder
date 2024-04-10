@@ -12,3 +12,8 @@ export type FilmImagesTypes = 'backdrops' | 'cover'
 | 'frame' | 'promo' 
 | 'screenshot' | 'shooting' 
 | 'still' | 'wallpaper'
+
+export const reviewTypes = {
+  positive: 'Позитивный',
+  negative: 'Негативный'
+}

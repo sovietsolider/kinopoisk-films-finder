@@ -5,6 +5,7 @@
     background-color: $secondary-bg;
     border-radius: 1rem;
     padding: 2rem;
+    position: relative;
   }
 
   &-seasons-container {
@@ -13,10 +14,28 @@
   &-posters-image {
     object-fit: cover;
     min-width: 100%;
-    height: 300px;
+    height: 322px;
     object-position: 10% 50%
   }
+  &-reviews-container {
+    margin-bottom: 1rem;
+  }
+  &-posters-container {
+    margin-bottom: 1rem;
+  }
+  &-similar-movies-image {
+    height: 538px !important;
+  }
+}
 
+#film-back-button {
+  position: absolute;
+  top:1rem;
+  right: 1rem;
+}
+
+#film-back-icon {
+  margin-right: 0.2rem;
 }
 
 
@@ -29,10 +48,15 @@
 
   &-image {
     max-width: 30%;
+    height: calc(30% * 1.43);
     object-fit: cover ;
   }
 
   &-name {
+    &-name {
+      padding: 0 1rem;
+    }
+    text-wrap: wrap;
     text-align: center;
     &-container {
       width: calc(70% - 1rem) ;
@@ -48,11 +72,6 @@
       display: flex;
       gap: 1rem;
       justify-content: center;
-    }
-    &-rating-inner {
-      display: flex;
-      gap: 1rem;
-      align-items: center
     }
     &-authors-slider-container {
       padding: 0 2rem;

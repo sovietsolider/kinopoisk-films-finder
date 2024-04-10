@@ -24,3 +24,40 @@ export interface PosterType {
   movieId: string
   url: string
 }
+
+export interface ReviewType {
+  id: number
+  movieId: number
+  title: string
+  review: string
+  date: string
+  author: string
+  type: 'Позитивный' | 'Негативный'
+}
+
+export interface FilmType {
+  id: number
+  isSeries: boolean
+  poster: {
+    url: string
+    previewUrl: string
+  },
+  name: string
+  year: number
+  ageRating: number
+  description: string
+  rating: {
+    await: number | null
+    filmCritics: number | null
+    imdb: number | null
+    kp: number | null
+    russianFilmCritics: number | null
+  }
+  similarMovies: {
+    year: number
+    name: string
+    poster: {url: string, previewUrl: string}
+    id: number
+  }[]
+  persons: {name: string, photo: string}[]
+}

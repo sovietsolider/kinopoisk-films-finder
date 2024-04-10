@@ -6,10 +6,12 @@ import './PaginatedSlider.scss'
 export interface PaginatedSliderProps {
   data: any[]
   pages: number
-  onPageChanged: (page: number) => void
+  onPageChanged?: (page: number) => void
+  onItemClick?: (item: any) => void
   imageUrlGetter: (data: any) => string
   children?: JSX.Element | JSX.Element[] | string[] | string;
   imageClass?: string
+  itemClass?: string
   sliderOptions?: Settings
 }
 
@@ -24,22 +26,24 @@ export default function PaginatedSlider({
   children,
   onPageChanged,
   imageUrlGetter,
+  onItemClick,
   imageClass = "paginated-slider-carousel-image",
-  sliderOptions=defaultSliderOptions
+  itemClass="",
+  sliderOptions = defaultSliderOptions
 }: PaginatedSliderProps) {
   const [currentPage, setCurrentPage] = useState(1)
   let sliderRef = useRef(null);
 
   return <>
     <div className="paginated-slider-title">
-      <div className="title-2 text-bold">
+      <div className="title-2 text-bold paginated-slider-title-text">
         {children}
       </div>
       <div className='paginated-slider-pagination-list'>
         {
           Array(pages).fill(0).map((nothing: number, index: number) => {
             return <div
-              onClick={() => { setCurrentPage(index + 1); onPageChanged(index + 1); (sliderRef?.current as any).slickGoTo(0) }}
+              onClick={() => { setCurrentPage(index + 1); onPageChanged && onPageChanged(index + 1); (sliderRef?.current as any).slickGoTo(0) }}
               className={`paginated-slider-pagination-item title-3 
               ${(index + 1) === currentPage && 'paginated-slider-pagination-item-active'}`}
             >
@@ -53,14 +57,12 @@ export default function PaginatedSlider({
     <div className='paginated-slider-episodes-slider'>
       {data.length > 0 && <Slider ref={sliderRef} {...sliderOptions}>
         {data.map((episode: any, index: number) => (
-          <div key={index}>
-            <div className="">
-              <div className="paginated-slider-carousel-image-container">
-                <img src={imageUrlGetter(episode) ?? process.env.NO_POSTER_URL} className={`${imageClass} rounded-border-1`} />
-              </div>
-              <div className="text-bold">
-                {episode.name}
-              </div>
+          <div key={index} onClick={() => onItemClick && onItemClick(episode)} className={`${itemClass}`}>
+            <div className="paginated-slider-carousel-image-container">
+              <img src={imageUrlGetter(episode) ?? process.env.NO_POSTER_URL} className={`${imageClass} rounded-border-1`} />
+            </div>
+            <div className="text-bold">
+              {episode.name}
             </div>
           </div>
         ))}

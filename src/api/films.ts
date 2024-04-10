@@ -37,10 +37,14 @@ export default class FilmsAPI {
     limit: number,
     page: number,
   ) {
-    return http.get(`/v1.4/image?limit=${limit}&page=${page}&type=${type}&movieId=${id}`)
+    return http.get(`/v1.4/image?page=${page}&limit=${limit}&movieId=${id}&type=${type}`)
   }
   
   public static async getFilmSeasons(id: number, limit: number, page: number) {
     return http.get(`/v1.4/season?limit=${limit}&page=${page}&movieId=${id}&sortField=number&sortType=1`)
+  }
+
+  public static async getFilmReviews(id: number, limit: number, page: number) {
+    return http.get(`/v1.4/review?limit=${limit}&page=${page}&movieId=${id}`)
   }
 }

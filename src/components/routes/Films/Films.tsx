@@ -1,12 +1,12 @@
 import FilmsFilter from '@/components/routes/Films/components/FilmsFilter/FilmsFilter'
 import './Films.scss'
-import { FilmType } from './components/FilmCard/types'
+import { FilmType } from "@/components/routes/Film/types"
 import FilmCard from './components/FilmCard/FilmCard'
 import React, { useEffect, useRef, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { FilmsFilterType } from './components/FilmsFilter/types'
 import { Pagination, PaginationProps, Skeleton } from 'antd'
-import { storedCurrentPage, storedElementsPerPage } from '@/store/filmsPagination'
+import { storedFilms, storedCurrentPage, storedElementsPerPage } from '@/store/filmsPagination'
 import { useNavigate } from 'react-router-dom'
 import _ from 'lodash'
 import FilmsAPI from '@/api/films'
@@ -63,29 +63,30 @@ export function FilmsGrid({
 
 export function Films() {
   //const [films, setFilms] = useRecoilState(foundFilms)
-  const [films, setFilms] = useState<{docs: FilmType[], pages: number}>({docs: [], pages: 0})
+  const [films, setFilms] = useRecoilState<{docs: FilmType[], pages: number}>(storedFilms)
   const [isLoading, setIsLoading] = useState(true)
   const [currentPage, setCurrentPage] = useRecoilState(storedCurrentPage)
   const [elementsPerPage, setElementsPerPage] = useRecoilState(storedElementsPerPage)
   const [storedFilmsFilter, setStoredFilmsFilter] = useRecoilState(filmsFilter)
-  const [isFirstRender, setIsFirstRender] = useState(true)
-  const cachedPages = useRef<{[k:string]: {docs: never[], pages: number}}>({})
+  const isFirstRender = useRef(true)
+  const cachedPages = useRef<{[k:string]: {docs: never[], pages: number, elementsPerPage: number}}>({})
 
   const getFilms = async (filter: FilmsFilterType) => {
     setIsLoading(true)
 
-    if (cachedPages.current[currentPage]) {
+    if (cachedPages.current[currentPage] && elementsPerPage === cachedPages.current[currentPage].elementsPerPage) {
       setFilms(cachedPages.current[currentPage])
     } else {
       const res = (await FilmsAPI.getFilms(elementsPerPage, currentPage, filter)).data
       setFilms({docs: res.docs, pages: res.pages})
-      cachedPages.current[currentPage] = {docs: res.docs, pages: res.pages}
+      cachedPages.current[currentPage] = {docs: res.docs, pages: res.pages, elementsPerPage}
     }
 
     setIsLoading(false)
   }
 
   const onFilterChanged = async (filter: FilmsFilterType) => {
+    console.log('filter changed')
     cachedPages.current = {}
     setCurrentPage(1)
     setStoredFilmsFilter(filter)
@@ -93,12 +94,13 @@ export function Films() {
   }
 
   useEffect(() => {
-    if (!isFirstRender) {
-      getFilms(storedFilmsFilter as FilmsFilterType)
-    } else {
-      setIsFirstRender(false)
+    console.log('gettings', _.cloneDeep(storedFilmsFilter))
+    getFilms(storedFilmsFilter as FilmsFilterType)
+    if (isFirstRender.current) {
+      isFirstRender.current = false
     }
-  }, [storedFilmsFilter, elementsPerPage, currentPage])
+    console.log(...Object.keys(storedFilmsFilter).map((key) => storedFilmsFilter[key]))
+  }, [...Object.keys(storedFilmsFilter).map((key) => storedFilmsFilter[key]), elementsPerPage, currentPage])
 
   const onPaginationChanged: PaginationProps['onChange'] = (page, pageSize) => {
     setCurrentPage(page)
@@ -106,8 +108,9 @@ export function Films() {
   }
 
   return (<>
+  {JSON.stringify(storedFilmsFilter)}
     <div className='films-container'>
-      <FilmsFilter onFilterChanged={onFilterChanged} />
+      <FilmsFilter value={storedFilmsFilter} onFilterChanged={onFilterChanged} />
 
       <FilmsGrid
         currentPage={currentPage}

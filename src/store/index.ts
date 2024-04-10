@@ -20,9 +20,11 @@ export function setDictCountries(countries: never[], setCountries: SetterOrUpdat
   }
 }
 
-export const filmsFilter = atom({
+export const filmsFilter = atom<FilmsFilterType>({
   key: 'filmsFilter',
-  default: {}
+  default: {year: null,
+    ageRating: null,
+    countries: []}
 })
 
 

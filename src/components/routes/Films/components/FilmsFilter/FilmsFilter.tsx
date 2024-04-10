@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './FilmsFilter.scss'
 import { FilmsFilterType } from './types'
 import { Form, Input, InputNumber, Select, Slider, Spin } from 'antd'
@@ -10,12 +10,14 @@ import FilmsAPI from '@/api/films'
 import { useSearchParams } from 'react-router-dom'
 import _ from 'lodash'
 
-export default function FilmsFilter({onFilterChanged}: {onFilterChanged: (filterModel: FilmsFilterType) => void}) {
+export default function FilmsFilter(
+  {onFilterChanged, value}: {onFilterChanged: (filterModel: FilmsFilterType) => void, value: FilmsFilterType}
+) {
   const [countries, setCountries] = useRecoilState(dictCountries)
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [nameToFind, setNameToFind] = useState<string | null>(null)
-
+  const isFirstRender = useRef(true)
 
   const [model, setModel] = useState<FilmsFilterType>({
     year: null,
@@ -26,19 +28,25 @@ export default function FilmsFilter({onFilterChanged}: {onFilterChanged: (filter
   const onModelChanged = useCallback(
     _.debounce(async (model: FilmsFilterType) => {
       onFilterChanged(model)
-      
-    }, 3000), []
+    }, 1000), []
   )
+  useEffect(() => {
+    setModel(value)
+    onModelChanged(model)
+    // if(isFirstRender.current) {
+    //   //setModel(value)
+    //   isFirstRender.current = false
+    // } else {
+    //   onModelChanged(model)
+    // }
+  }, [model])
 
   useEffect(() => {
     setDictCountries(countries, setCountries)
     //FilmsAPI.getFilms(10, 1, {})
   }, [])
 
-  useEffect(() => {
-    console.log('in use effect', model)
-    onModelChanged(model)
-  }, [model])
+  
 
   const notFoundContentNode = () => {
     if(!countries.length) {

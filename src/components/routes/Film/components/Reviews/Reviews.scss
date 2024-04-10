@@ -1,0 +1,45 @@
+@import '~@/assets/scss/_colors.scss';
+
+.reviews {
+  &-title {
+    margin-bottom: 1rem;
+  }
+
+  &-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &-item {
+    &-container {
+      background-color: $primary-bg;
+      width: 50%;
+      padding: 1rem;
+      height: fit-content;
+    }
+
+    &-title {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+
+      &-author {
+        display: flex;
+      }
+    }
+
+    &-review {
+      .anticon-copy {
+        color: gray !important;
+      }
+      &-text {
+        white-space: break-spaces;
+      }
+      &-show-moreless {
+        cursor: pointer;
+        color: gray;
+      }
+    }
+  }
+}

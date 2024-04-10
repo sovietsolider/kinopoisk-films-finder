@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
-
+@import '~@/assets/scss/_colors.scss';
 
 .title-1 {
   font-size: 3rem;
@@ -21,6 +21,15 @@
   color: white;
 }
 
+.text-gray {
+  color: gray;
+}
+
+.text-primary {
+  color: $primary;
+}
+
+
 .text-nowrap {
   text-wrap: nowrap;
 }
@@ -39,6 +48,10 @@
 
 .ant-pagination-item-ellipsis {
   color: white !important;
+}
+
+.default-font {
+  font-size: 1rem;
 }
 
 .ant-pagination-item-link-icon  {

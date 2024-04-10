@@ -2,7 +2,7 @@ import { Input, Modal, Pagination, PaginationProps, Skeleton } from "antd";
 import './FindByNameModal.scss'
 import { useCallback, useEffect, useState } from "react";
 import FilmCard from "@/components/routes/Films/components/FilmCard/FilmCard";
-import { FilmType } from "@/components/routes/Films/components/FilmCard/types";
+import { FilmType } from "@/components/routes/Film/types"
 import { FilmsGrid } from "@/components/routes/Films/Films";
 import FilmsAPI from "@/api/films";
 import _ from 'lodash'

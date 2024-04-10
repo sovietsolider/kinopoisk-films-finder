@@ -1,4 +1,4 @@
-import { FilmType } from "./types";
+import { FilmType } from "@/components/routes/Film/types"
 import './FilmCard.scss'
 import { useEffect, useState } from "react";
 import { Skeleton } from "antd";
