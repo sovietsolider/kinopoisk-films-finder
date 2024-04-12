@@ -15,9 +15,7 @@ export default function FilmsFilter(
   {onFilterChanged, value}: {onFilterChanged: (filterModel: FilmsFilterType) => void, value: FilmsFilterType}
 ) {
   const [countries, setCountries] = useRecoilState(dictCountries)
-
   const [searchParams, setSearchParams] = useSearchParams();
-  const [nameToFind, setNameToFind] = useState<string | null>(null)
   const isFirstRender = useRef(true)
 
   const [model, setModel] = useState<FilmsFilterType>(FilmsAdapter.filterFromQuery(searchParams))
@@ -27,12 +25,17 @@ export default function FilmsFilter(
       onFilterChanged(model)
     }, 1000), []
   )
+
+  useEffect(() => {
+    console.log('setting value')
+    setModel(value)
+  }, [value.ageRating, value.countries, value.year])
   
   useEffect(() => {
     if(isFirstRender.current) {
-      setModel(value)
       isFirstRender.current = false
     } else {
+      console.log('model changing')
       onModelChanged(model)
     }
   }, [model])

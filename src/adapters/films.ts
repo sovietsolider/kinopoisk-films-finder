@@ -15,7 +15,6 @@ export const sliderAdapter = (val: number[]) => {
 
 export class FilmsAdapter {
   public static filmsFilterToServer(limit: number, page: number, filter: FilmsFilterType): URLSearchParams {
-    console.log('filterAdapterToServer',filter)
     const params = new URLSearchParams()
 
     params.append('limit', limit.toString())
@@ -43,10 +42,10 @@ export class FilmsAdapter {
   public static filterFromQuery(params: URLSearchParams): FilmsFilterType {
     const resFilter: Partial<FilmsFilterType> = {}
     const queryFilter = Object.fromEntries(params.entries()) as any
+    
     resFilter.countries = params.getAll('countries.name')
-    queryFilter.ageRating = queryFilter.ageRating?.split('-').map((d: string) => Number(d)) ?? null
-    queryFilter.year = Number(queryFilter.year)
-    console.log(resFilter)
+    resFilter.ageRating = queryFilter.ageRating?.split('-').map((d: string) => Number(d)) ?? [0, 18]
+    resFilter.year = queryFilter.year ? Number(queryFilter.year) : null
     return resFilter as FilmsFilterType
   }
 }

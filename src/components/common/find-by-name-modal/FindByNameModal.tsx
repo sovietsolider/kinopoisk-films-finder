@@ -46,7 +46,6 @@ export default function FindByNameModal({ opened, onModalClose }: { opened: bool
   }, [name])
 
   useEffect(() => {
-    console.log('render')
     if(isFirstRender.current) {
       isFirstRender.current = false
     } else {
