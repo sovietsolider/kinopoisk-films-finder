@@ -5,7 +5,7 @@ export const sliderAdapter = (val: number[]) => {
   if(!val.length) {
     return null
   }
-  if (val[0] !== val[1]) {
+  if (val[1] && (val[0] !== val[1])) {
     return `${val[0]}-${val[1]}`
   } else {
     return `${val[0]}`
@@ -36,6 +36,7 @@ export class FilmsAdapter {
         params.append('countries.name', country)
       }
     }
+    console.log(params.toString())
     return params
   }
 

@@ -74,18 +74,19 @@ export function Films() {
   }, [searchParams])
 
   useEffect(() => {
-    getFilms(filmsFilter)
-    setStoredLastFilmsUrl(`/films?${FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filmsFilter).toString()}`)
     if (isFirstRender.current) {
       isFirstRender.current = false
+    } else {
+      getFilms(filmsFilter)
     }
+    
+    setStoredLastFilmsUrl(`/films?${FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filmsFilter).toString()}`)
+    
     
   }, [...Object.keys(filmsFilter).map((key) => filmsFilter[key]), elementsPerPage, currentPage])
 
   const onPaginationChanged: PaginationProps['onChange'] = (page, pageSize) => {
     setSearchParams(FilmsAdapter.filmsFilterToServer(pageSize, page, filmsFilter))
-    // setCurrentPage(page)
-    // setElementsPerPage(pageSize)
   }
 
   return (<>

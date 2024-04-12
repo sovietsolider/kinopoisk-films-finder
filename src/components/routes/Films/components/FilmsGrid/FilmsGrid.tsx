@@ -3,6 +3,8 @@ import { Pagination, PaginationProps } from "antd"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import FilmCard from "../FilmCard/FilmCard"
+import './FilmsGrid.scss'
+import useWindowDimensions from "@/components/hooks/useWindowDimensions"
 
 interface FilmsGridProps {
   isLoading: boolean,
@@ -23,29 +25,27 @@ export function FilmsGrid({
 }: FilmsGridProps) {
   const navigate = useNavigate()
   const [loadedImagesCount, setLoadedImagesCount] = useState(0)
-
-  const filmsListStyle: React.CSSProperties = {
-    minHeight: `calc(${elementsPerPage / 5} * (10px + 360px)`
-  }
+  const {width, height} = useWindowDimensions()
 
   // useEffect(() => {
   // }, [loadedImagesCount])
 
   return <>
-    <div className='films-list-container' style={filmsListStyle}>
+    <div className='films-grid-list-container'>
       {
-          films.map((film: FilmType, index: number) => (
-            <FilmCard
-              imgSrc={film.poster?.previewUrl ?? null}
-              name={film?.name ?? ''}
-              id={film.id}
-              onCardClick={(id) => navigate(`/films/${id}`)}
-              onLoad={() => { setLoadedImagesCount(prev => prev + 1) }}
-            />
-          ))
+        films.map((film: FilmType, index: number) => (
+          <FilmCard
+            key={film.id}
+            imgSrc={film.poster?.previewUrl ?? null}
+            name={film?.name ?? ''}
+            id={film.id}
+            onCardClick={(id) => navigate(`/films/${id}`)}
+            onLoad={() => { setLoadedImagesCount(prev => prev + 1) }}
+          />
+        ))
       }
     </div>
-    <div className='pagination-container'>
+    <div className='films-grid-pagination-container'>
       <Pagination
         showSizeChanger
         current={currentPage}
