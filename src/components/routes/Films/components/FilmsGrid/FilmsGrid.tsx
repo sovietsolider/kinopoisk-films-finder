@@ -25,7 +25,6 @@ export function FilmsGrid({
 }: FilmsGridProps) {
   const navigate = useNavigate()
   const [loadedImagesCount, setLoadedImagesCount] = useState(0)
-  const {width, height} = useWindowDimensions()
 
   // useEffect(() => {
   // }, [loadedImagesCount])

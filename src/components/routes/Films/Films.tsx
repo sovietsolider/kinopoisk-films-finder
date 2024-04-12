@@ -34,6 +34,7 @@ export function Films() {
 
 
   const getFilms = async (filter: FilmsFilterType) => {
+    console.log('getFilms')
     setIsLoading(true)
     if (cachedPages.current[currentPage] && elementsPerPage === cachedPages.current[currentPage].elementsPerPage) {
       setFilms(cachedPages.current[currentPage])
@@ -77,9 +78,9 @@ export function Films() {
     if (isFirstRender.current) {
       isFirstRender.current = false
     } else {
+
       getFilms(filmsFilter)
     }
-    
     setStoredLastFilmsUrl(`/films?${FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filmsFilter).toString()}`)
     
     
@@ -87,6 +88,8 @@ export function Films() {
 
   const onPaginationChanged: PaginationProps['onChange'] = (page, pageSize) => {
     setSearchParams(FilmsAdapter.filmsFilterToServer(pageSize, page, filmsFilter))
+    // setCurrentPage(page)
+    // setElementsPerPage(pageSize)
   }
 
   return (<>

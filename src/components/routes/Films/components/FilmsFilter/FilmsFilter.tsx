@@ -8,30 +8,31 @@ import DictsAPI from '@/api/dicts'
 import { LoadingOutlined } from '@ant-design/icons';
 import FilmsAPI from '@/api/films'
 import { useSearchParams } from 'react-router-dom'
-import _ from 'lodash'
+import _, { first } from 'lodash'
 import { FilmsAdapter } from '@/adapters/films'
 
 export default function FilmsFilter(
   {onFilterChanged, model}: {onFilterChanged: (filterModel: FilmsFilterType) => void, model: FilmsFilterType}
 ) {
   const [countries, setCountries] = useRecoilState(dictCountries)
-  const [innerModel, setInnerModel] = useState<FilmsFilterType>(model)
-  const isFirstRender = useRef(false)
+  //const [innerModel, setInnerModel] = useState<FilmsFilterType>()
+  const isFirstRender = useRef(true)
+  const innerModel = useRef<FilmsFilterType>()
   
+
   const onModelChanged = useCallback(
     _.debounce(async (model: FilmsFilterType) => {
       onFilterChanged(model)
     }, 1000), []
   )
-  
+
   useEffect(() => {
-    if(isFirstRender.current) {
-      setDictCountries(countries, setCountries)
-      isFirstRender.current = false
-    } else {
-      onModelChanged(innerModel)
-    }
-  }, [innerModel])
+    setDictCountries(countries, setCountries)
+    
+    //FilmsAPI.getFilms(10, 1, {})
+  }, [])
+
+
   
 
   const notFoundContentNode = () => {
@@ -51,24 +52,33 @@ export default function FilmsFilter(
       <div className="filter-inner">
         <div className='filter-item'>
           <div className='text-white form-label text-bold '>Год</div>
-          <InputNumber style={{width: '100%'}} value={innerModel.year} min={1850} placeholder="Введите год..." onChange={(val:any) => setInnerModel({...model, year: val})}/>
+          <InputNumber style={{width: '100%'}} value={model.year} min={1850} placeholder="Введите год..." onChange={(val:any) => {
+            innerModel.current = {...model, year: val}; 
+            onModelChanged(innerModel.current)
+          }}/>
         </div>
         <div className='filter-item'>
           <div className='text-white form-label text-bold '>Страна</div>
           <Select
-            value={innerModel.countries}
+            value={model.countries}
             mode="multiple"
             placeholder="Выберите страну"
             notFoundContent={notFoundContentNode()}
             style={{ width: '100%' }}
             options={countries}
-            onChange={(val) => setInnerModel({...model, countries: val})}
+            onChange={(val) => {
+              innerModel.current = {...model, countries: val};
+              onModelChanged(innerModel.current)
+            }}
           />
         </div>
         <div className='filter-item' >
           <div className='text-white form-label text-bold text-nowrap'>Возрастной рейтинг</div>
           <div style={{borderBottom: '2px solid white', position: 'relative', top: '30px'}}></div>
-          <Slider min={0} max={18} defaultValue={innerModel.ageRating} range onChangeComplete={(val: number[]) => {setInnerModel({...model, ageRating: val})}}/>
+          <Slider min={0} max={18} defaultValue={model.ageRating} range onChangeComplete={(val: number[]) => { 
+            innerModel.current = {...model, ageRating: val}; 
+            onModelChanged(innerModel.current)
+          }}/>
         </div>
       </div>
     </div>
