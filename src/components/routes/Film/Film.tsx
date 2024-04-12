@@ -13,6 +13,8 @@ import PaginatedSlider from "./components/PaginatedSlider/PaginatedSlider"
 import Reviews from "./components/Reviews/Reviews"
 import { Badge } from "@/components/common/Badge/Badge"
 import { LeftOutlined } from "@ant-design/icons"
+import { useRecoilState } from "recoil"
+import { lastFilmsUrl } from "@/store/filmsPagination"
 
 export default function Film() {
   const postersLimit = 20
@@ -32,6 +34,8 @@ export default function Film() {
   const cachedSeasonsPages = useRef<CachedPages<SeasonType>>({})
   const cachedPostersPages = useRef<CachedPages<PosterType>>({})
   const cachedReviewsPages = useRef<CachedPages<any>>({})
+
+  const [storedLastFilmsUrl, setStoredLastFilmsUrl] = useRecoilState(lastFilmsUrl)
 
   const navigate = useNavigate()
 
@@ -122,7 +126,7 @@ export default function Film() {
   return <>
     {!_.isNil(film) &&
       <div className="film-container text-white">
-        <div className="cursor-pointer" id="film-back-button" onClick={() => navigate('/films')}>
+        <div className="cursor-pointer" id="film-back-button" onClick={() => storedLastFilmsUrl.length ? navigate(storedLastFilmsUrl) : '/films'}>
           <span>
             <LeftOutlined id="film-back-icon" />
             </span><span className="text-bold" >

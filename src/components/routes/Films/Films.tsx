@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { FilmsFilterType } from './components/FilmsFilter/types'
 import { Pagination, PaginationProps, Skeleton, Spin } from 'antd'
-import { storedFilms, storedCurrentPage, storedElementsPerPage } from '@/store/filmsPagination'
+import { storedFilms, storedCurrentPage, storedElementsPerPage, lastFilmsUrl } from '@/store/filmsPagination'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import _, { filter } from 'lodash'
 import { difference } from '@/utils/deep-compare'
@@ -27,8 +27,11 @@ export function Films() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [filmsFilter, setFilmsFilter] = useState<FilmsFilterType>(FilmsAdapter.filterFromQuery(searchParams))
-  const [currentPage, setCurrentPage] = useState(Number(searchParams.get('page')) ?? 1)
-  const [elementsPerPage, setElementsPerPage] = useState(Number(searchParams.get('limit')) ?? 1)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [elementsPerPage, setElementsPerPage] = useState(10)
+
+  const [storedLastFilmsUrl, setStoredLastFilmsUrl] = useRecoilState(lastFilmsUrl)
+
 
   const getFilms = async (filter: FilmsFilterType) => {
     setIsLoading(true)
@@ -45,31 +48,49 @@ export function Films() {
   }
 
   const onFilterChanged = async (filter: FilmsFilterType) => {
-    setFilmsFilter(filter)    
-    if (!_.isEmpty(difference(_.cloneDeep(filmsFilter), _.cloneDeep(filter)))) {
-      setCurrentPage(1)
-      cachedPages.current = {}
-    }
+    console.log('filerChanged')
+    setSearchParams(FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filter))
+    cachedPages.current = {}  
+    // if (!_.isEmpty(difference(_.cloneDeep(filmsFilter), _.cloneDeep(filter)))) {
+    //   setCurrentPage(1)
+      
+    // }
   }
 
   useEffect(() => {
+    const page = Number(searchParams.get('page'))
+    const limit = Number(searchParams.get('limit'))
+    if(page > 0) {
+      setCurrentPage(page)
+    } else {
+      setSearchParams(FilmsAdapter.filmsFilterToServer(limit, 1, filmsFilter))
+    }
+    if(limit > 0) {
+      setElementsPerPage(limit)
+    } else {
+      setSearchParams(FilmsAdapter.filmsFilterToServer(10, page, filmsFilter))
+    }
+    setFilmsFilter(FilmsAdapter.filterFromQuery(searchParams)) 
+  }, [searchParams])
+
+  useEffect(() => {
     getFilms(filmsFilter)
+    setStoredLastFilmsUrl(`/films?${FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filmsFilter).toString()}`)
     if (isFirstRender.current) {
       isFirstRender.current = false
-    } else {
-      getFilms(filmsFilter as FilmsFilterType)
     }
-    setSearchParams(FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filmsFilter))
+    
   }, [...Object.keys(filmsFilter).map((key) => filmsFilter[key]), elementsPerPage, currentPage])
 
   const onPaginationChanged: PaginationProps['onChange'] = (page, pageSize) => {
-    setCurrentPage(page)
-    setElementsPerPage(pageSize)
+    setSearchParams(FilmsAdapter.filmsFilterToServer(pageSize, page, filmsFilter))
+    // setCurrentPage(page)
+    // setElementsPerPage(pageSize)
   }
 
   return (<>
     <div className='films-container'>
-      <FilmsFilter value={filmsFilter} onFilterChanged={onFilterChanged} />
+      <FilmsFilter model={filmsFilter} onFilterChanged={onFilterChanged} />
 
       <FilmsGrid
         currentPage={currentPage}

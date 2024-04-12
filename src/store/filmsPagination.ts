@@ -16,3 +16,8 @@ export const storedFilms = atom<CommonServerPaginationResponse<FilmType>>({
   key: 'lastFilms',
   default: {docs: [], pages: 0}
 })
+
+export const lastFilmsUrl = atom<string>({
+  key: "lastFilmsUrl",
+  default: ''
+})
