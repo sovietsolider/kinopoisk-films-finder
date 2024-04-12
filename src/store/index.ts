@@ -24,7 +24,7 @@ export const filmsFilter = atom<FilmsFilterType>({
   key: 'filmsFilter',
   default: {
     year: null,
-    ageRating: [],
+    ageRating: [0, 18],
     countries: []}
 })
 

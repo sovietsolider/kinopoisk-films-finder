@@ -4,27 +4,19 @@ import _ from 'lodash'
 import { FilmsAdapter } from "@/adapters/films";
 import { FilmImagesTypes } from "@/types/dicts";
 
+export function getFilmsQueryParams() {
+
+}
+
 export default class FilmsAPI {
   public static async getFilms(limit: number, page: number, filter: FilmsFilterType) {
-    const resParams = new URLSearchParams()
-    resParams.append('limit', limit.toString())
-    resParams.append('page', page.toString())
-    const filterToServer = FilmsAdapter.filmsFilterToServer(filter)
-    for(const key of _.remove(Object.keys(filterToServer), 'countries.name')) {
-      if(filterToServer[key]) {
-        resParams.append(key, filterToServer[key])
-      } 
-    }
-    if(filterToServer["countries.name"]) {
-      for(const country of filterToServer["countries.name"]) {
-        resParams.append('countries.name', country)
-      }
-    }
+    const resParams = FilmsAdapter.filmsFilterToServer(limit, page, filter)
+    
     return http.get('/v1.4/movie', { params: resParams })
   }
 
   public static async getFilmsByName(name: string, limit: number, page: number) {
-    return http.get(`/v1.4/movie/search?query=${name}&limit=${limit}&page=${page}`)
+    return http.get(`/v1.4/movie/search?${ name.length > 0 ? `query=${name}&` : ''}limit=${limit}&page=${page}`)
   }
 
   public static async getFilmById(id: number) {

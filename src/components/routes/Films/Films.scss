@@ -4,8 +4,7 @@
 .films-list-container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  row-gap: 5px;
-  column-gap: 10px;
+  gap: 10px;
   margin-bottom: 1rem;
   scrollbar-gutter: stable both-edges;
 }

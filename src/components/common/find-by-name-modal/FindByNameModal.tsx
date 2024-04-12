@@ -1,9 +1,9 @@
 import { Input, Modal, Pagination, PaginationProps, Skeleton } from "antd";
 import './FindByNameModal.scss'
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import FilmCard from "@/components/routes/Films/components/FilmCard/FilmCard";
 import { FilmType } from "@/components/routes/Film/types"
-import { FilmsGrid } from "@/components/routes/Films/Films";
+import { FilmsGrid } from "@/components/routes/Films/components/FilmsGrid/FilmsGrid";
 import FilmsAPI from "@/api/films";
 import _ from 'lodash'
 import { FilmsFromServer } from "@/store";
@@ -14,6 +14,7 @@ export default function FindByNameModal({ opened, onModalClose }: { opened: bool
   const [currentPage, setCurrentPage] = useState(1)
   const [elementsPerPage, setElementsPerPage] = useState(10)
   const [films, setFilms] = useState<FilmsFromServer>({docs: [], pages: 0})
+  const isFirstRender= useRef(true)
 
   const onPaginationChanged: PaginationProps['onChange'] = (page, pageSize) => {
     setCurrentPage(page)
@@ -27,22 +28,30 @@ export default function FindByNameModal({ opened, onModalClose }: { opened: bool
 
   const onNameChanged = useCallback(
     _.debounce(async (name: string, elementsPerPage: number) => {
-      getFilms(name, elementsPerPage, 1)
-    }, 3000), []
+      fetchFilms(name, elementsPerPage, 1)
+    }, 1000), []
   )
 
-  useEffect(() => {
-    onNameChanged(name, elementsPerPage)
-  }, [name])
-
-  const fetchFilms = async () => {
-    setIsLoading(true)
-    getFilms(name, elementsPerPage, currentPage)
-    setIsLoading(false)
+  const fetchFilms = async (name: string, elementsPerPage: number, currentPage: number) => {
+    if(name.length) {
+      setIsLoading(true)
+      getFilms(name, elementsPerPage, currentPage)
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
-    fetchFilms()
+    console.log('name changed')
+    onNameChanged(name, elementsPerPage)
+  }, [name])
+
+  useEffect(() => {
+    console.log('render')
+    if(isFirstRender.current) {
+      isFirstRender.current = false
+    } else {
+      fetchFilms(name, elementsPerPage, currentPage)
+    }
   }, [currentPage, elementsPerPage])
 
   return <>

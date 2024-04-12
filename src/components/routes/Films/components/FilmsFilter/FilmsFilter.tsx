@@ -9,6 +9,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import FilmsAPI from '@/api/films'
 import { useSearchParams } from 'react-router-dom'
 import _ from 'lodash'
+import { FilmsAdapter } from '@/adapters/films'
 
 export default function FilmsFilter(
   {onFilterChanged, value}: {onFilterChanged: (filterModel: FilmsFilterType) => void, value: FilmsFilterType}
@@ -19,21 +20,15 @@ export default function FilmsFilter(
   const [nameToFind, setNameToFind] = useState<string | null>(null)
   const isFirstRender = useRef(true)
 
-  const [model, setModel] = useState<FilmsFilterType>({
-    year: null,
-    ageRating: [],
-    countries: []
-  })
+  const [model, setModel] = useState<FilmsFilterType>(FilmsAdapter.filterFromQuery(searchParams))
 
   const onModelChanged = useCallback(
     _.debounce(async (model: FilmsFilterType) => {
       onFilterChanged(model)
-      console.log('debounce')
     }, 1000), []
   )
   
   useEffect(() => {
-    console.log('filter',_.cloneDeep(value), isFirstRender.current)
     if(isFirstRender.current) {
       setModel(value)
       isFirstRender.current = false
@@ -83,7 +78,7 @@ export default function FilmsFilter(
         <div className='filter-item' >
           <div className='text-white form-label text-bold text-nowrap'>Возрастной рейтинг</div>
           <div style={{borderBottom: '2px solid white', position: 'relative', top: '30px'}}></div>
-          <Slider min={0} max={18} value={model.ageRating} range defaultValue={[0, 18]} onChangeComplete={(val: number[]) => setModel({...model, ageRating: val})}/>
+          <Slider min={0} max={18} defaultValue={model.ageRating} range onChangeComplete={(val: number[]) => {setModel({...model, ageRating: val})}}/>
         </div>
       </div>
     </div>
