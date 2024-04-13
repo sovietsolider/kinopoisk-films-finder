@@ -59,5 +59,5 @@ export interface FilmType {
     poster: {url: string, previewUrl: string}
     id: number
   }[]
-  persons: {name: string, photo: string}[]
+  persons: {name: string, photo: string, enProfession: 'actor'}[]
 }

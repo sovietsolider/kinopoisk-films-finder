@@ -60,8 +60,7 @@ export default function PaginatedSlider({
         </div>
       </div>
     </div>
-    <div className='paginated-slider-episodes-slider'>
-      
+    { data.length > 0 ? <div className='paginated-slider-episodes-slider'>
       {data.length > 0 && <Slider ref={sliderRef} {...sliderOptions}>
         {data.map((episode: any, index: number) => (
           <div key={index} onClick={() => onItemClick && onItemClick(episode)} className={`${itemClass}`}>
@@ -74,9 +73,6 @@ export default function PaginatedSlider({
           </div>
         ))}
       </Slider>}
-    </div>
-    <div>
-
-    </div>
+    </div> : <div>Нет информации</div>}
   </>
 }

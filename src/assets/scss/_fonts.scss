@@ -3,10 +3,16 @@
 
 .title-1 {
   font-size: 3rem;
+  @media screen and (max-width: 867px) {
+    font-size: 2rem;
+  }  
 }
 
 .title-2 {
   font-size: 2rem;
+  @media screen and (max-width: 867px) {
+    font-size: 1rem;
+  }  
 }
 
 .title-3 {

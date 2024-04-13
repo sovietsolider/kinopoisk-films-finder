@@ -46,6 +46,7 @@ export default function Film() {
   const fetchFilm = async (id: number) => {
     const film = (await FilmsAPI.getFilmById(id)).data
     setFilm(film)
+    return film
   }
 
   const fetchPosters = async (id: number, type: FilmImagesTypes, limit: number, page: number) => {
@@ -101,25 +102,19 @@ export default function Film() {
     cachedSeasonsPages.current = {}
     cachedPostersPages.current = {}
     cachedReviewsPages.current = {}
-    fetchFilm(Number(params.id))
+    fetchFilm(Number(params.id)).then((film: FilmType) => film.isSeries ?
+      fetchSeasons(Number(params.id), seasonsLimit, currentSeasonsPage).then((total: number) => {
+        fetchSeasonsNames(Number(params.id), total, 1)
+      }) : null
+    )
     fetchPosters(Number(params.id), 'frame', postersLimit, currentPostersPage)
-    fetchSeasons(Number(params.id), seasonsLimit, currentSeasonsPage).then((total: number) => {
-      fetchSeasonsNames(Number(params.id), total, 1)
-    })
-    fetchReviews(Number(params.id), reviewsLimit, currentReviewPage)
+
+    //fetchReviews(Number(params.id), reviewsLimit, currentReviewPage)
   }, [params])
 
   useEffect(() => {
     fetchReviews(Number(params.id), reviewsLimit, currentReviewPage)
   }, [params, currentReviewPage])
-
-
-  const beforeChange = (currentSlide: number, nextSlide: number) => {
-    // if (nextSlide === 4) {
-    //   setTiles([...tiles, ...newTiles]);
-    //   setTimeout(() => (sliderRef.current as any).goTo(5), 0);
-    // }
-  }
 
   const ratingBoxStyle: (rating: number) => React.CSSProperties = (rating: number) => {
     const res: React.CSSProperties = {
@@ -148,6 +143,29 @@ export default function Film() {
         dots: true
       }
     }]
+  }
+
+  const filmsSimilarMoviesResponsiveOptions = {
+    responsive: [
+      {
+        breakpoint: 867,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 765,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: true,
+          dots: true
+        }
+      },
+    ]
   }
 
 
@@ -197,7 +215,7 @@ export default function Film() {
         </div>}
         {width < 1150 && <Actors film={film} />}
         {
-          Object.keys(seasonsNames).length && <div className="film-seasons-container">
+          Object.keys(seasonsNames).length > 0 && <div className="film-seasons-container">
             <PaginatedSlider
               pages={seasons.pages}
               type={'seasons'}
@@ -206,7 +224,7 @@ export default function Film() {
               additionalName={seasons.docs[0]?.name ?? ''}
               onPageChanged={(page: number) => fetchSeasons(Number(params.id), seasonsLimit, page)}
               imageUrlGetter={(d: any) => d.still.previewUrl}
-              sliderOptions={{...{ slidesToShow: 5, slidesToScroll: 5, infinite: false}, ...defaultResponsiveSliderOptions}}
+              sliderOptions={{ ...{ slidesToShow: 5, slidesToScroll: 5, infinite: false }, ...defaultResponsiveSliderOptions }}
             >
               Сезоны
             </PaginatedSlider>
@@ -217,7 +235,7 @@ export default function Film() {
             data={posters.docs ?? []}
             onPageChanged={(page: number) => fetchPosters(Number(params.id), 'frame', postersLimit, page)}
             imageUrlGetter={(d: any) => d.url}
-            sliderOptions={{...{ slidesToShow: 2, slidesToScroll: 2, infinite: false}, ...filmsPostersResponsiveOptions}}
+            sliderOptions={{ ...{ slidesToShow: 2, slidesToScroll: 2, infinite: false }, ...filmsPostersResponsiveOptions }}
             imageClass="film-posters-image"
           >
             Кадры из фильма
@@ -240,7 +258,7 @@ export default function Film() {
             imageUrlGetter={(d: any) => d.poster.previewUrl}
             itemClass="cursor-pointer"
             imageClass="paginated-slider-carousel-image film-similar-movies-image"
-            sliderOptions={{ slidesToShow: 3, slidesToScroll: 3, infinite: false, swipe: false }}
+            sliderOptions={{ ...{ slidesToShow: 3, slidesToScroll: 3, infinite: false }, ...filmsSimilarMoviesResponsiveOptions }}
           >
             Похожие фильмы
           </PaginatedSlider>

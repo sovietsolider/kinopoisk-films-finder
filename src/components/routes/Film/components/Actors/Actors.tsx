@@ -18,7 +18,7 @@ export default function Actors({film}: {film:FilmType}) {
     </div>
     <div className="film-title-name-authors-slider-container">
       <Slider {...{ ...authorSliderOptions, ...defaultResponsiveSliderOptions }}>
-        {film.persons?.map((person: { name: string, photo: string }, index) => (
+        {film.persons?.filter((d) => d.enProfession === 'actor').map((person: { name: string, photo: string }, index) => (
           <div key={index}>
             <div className="carousel-image-container">
               <div>

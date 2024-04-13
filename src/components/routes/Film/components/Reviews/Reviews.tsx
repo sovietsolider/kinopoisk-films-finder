@@ -50,6 +50,7 @@ export default function Reviews({ reviews, pages, currentPage, onPageChanged, el
     <div className="title-2 text-bold reviews-title">
       Рецензии пользователей
     </div>
+    { reviews.length > 0 ? <> 
     <div className="reviews-container">
       {reviews.map((review, index) => (
         <div key={review.id} className="reviews-item-container rounded-border-1">
@@ -95,5 +96,6 @@ export default function Reviews({ reviews, pages, currentPage, onPageChanged, el
         pageSizeOptions={[10, 20, 50, 100]}
       />
     </div>
+    </> : <div>Нет информации</div>}
   </>
 }
