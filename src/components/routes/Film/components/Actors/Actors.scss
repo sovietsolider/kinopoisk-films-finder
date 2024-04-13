@@ -1,0 +1,14 @@
+.actors {
+  &-container {
+    @media screen and (max-width: 1150px) {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+#actors-title {
+  margin-bottom: 0.5rem;
+  @media screen and (max-width: 1150px) {
+    text-align: start;
+  }
+}
