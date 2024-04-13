@@ -13,12 +13,27 @@ export const sliderAdapter = (val: number[]) => {
 }
 
 
+
 export class FilmsAdapter {
   public static filmsFilterToServer(limit: number, page: number, filter: FilmsFilterType): URLSearchParams {
-    const params = new URLSearchParams()
-
+    const params = this.filterToQuery(filter)
     params.append('limit', limit.toString())
     params.append('page', page.toString())
+    return params
+  }
+
+  public static filterFromQuery(params: URLSearchParams): FilmsFilterType {
+    const resFilter: Partial<FilmsFilterType> = {}
+    const queryFilter = Object.fromEntries(params.entries()) as any
+    
+    resFilter.countries = params.getAll('countries.name')
+    resFilter.ageRating = queryFilter.ageRating?.split('-').map((d: string) => Number(d)) ?? [0, 18]
+    resFilter.year = queryFilter.year ? Number(queryFilter.year) : null
+    return resFilter as FilmsFilterType
+  }
+
+  public static filterToQuery(filter: FilmsFilterType) {
+    const params = new URLSearchParams()
     const filterToServer =  {
       year: filter.year ? filter.year.toString() : null,
       ageRating: sliderAdapter(filter.ageRating),
@@ -36,17 +51,6 @@ export class FilmsAdapter {
         params.append('countries.name', country)
       }
     }
-    console.log(params.toString())
     return params
-  }
-
-  public static filterFromQuery(params: URLSearchParams): FilmsFilterType {
-    const resFilter: Partial<FilmsFilterType> = {}
-    const queryFilter = Object.fromEntries(params.entries()) as any
-    
-    resFilter.countries = params.getAll('countries.name')
-    resFilter.ageRating = queryFilter.ageRating?.split('-').map((d: string) => Number(d)) ?? [0, 18]
-    resFilter.year = queryFilter.year ? Number(queryFilter.year) : null
-    return resFilter as FilmsFilterType
   }
 }

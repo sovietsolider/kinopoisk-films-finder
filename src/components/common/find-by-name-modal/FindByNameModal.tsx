@@ -41,7 +41,6 @@ export default function FindByNameModal({ opened, onModalClose }: { opened: bool
   }
 
   useEffect(() => {
-    console.log('name changed')
     onNameChanged(name, elementsPerPage)
   }, [name])
 

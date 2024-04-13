@@ -47,15 +47,18 @@ export function Films() {
 
     setIsLoading(false)
   }
+  const isDeepChanged = (first: any, second: any) => {
+    console.log(difference(_.cloneDeep(first), _.cloneDeep(second)))
+    return !_.isEmpty(difference(_.cloneDeep(first), _.cloneDeep(second)))
+  }
 
   const onFilterChanged = async (filter: FilmsFilterType) => {
-    console.log('filerChanged')
-    setSearchParams(FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filter))
-    cachedPages.current = {}  
-    // if (!_.isEmpty(difference(_.cloneDeep(filmsFilter), _.cloneDeep(filter)))) {
-    //   setCurrentPage(1)
-      
-    // }
+    console.log(searchParams.toString)
+    if (isDeepChanged(_.cloneDeep(filmsFilter), _.cloneDeep(filter))) {
+      setFilmsFilter(filter)
+      setSearchParams(FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filter))
+      cachedPages.current = {}  
+    }
   }
 
   useEffect(() => {
@@ -78,8 +81,8 @@ export function Films() {
     if (isFirstRender.current) {
       isFirstRender.current = false
     } else {
-
       getFilms(filmsFilter)
+      
     }
     setStoredLastFilmsUrl(`/films?${FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filmsFilter).toString()}`)
     
