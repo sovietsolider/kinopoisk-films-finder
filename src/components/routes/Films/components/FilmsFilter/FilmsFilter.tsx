@@ -10,6 +10,7 @@ import FilmsAPI from '@/api/films'
 import { useSearchParams } from 'react-router-dom'
 import _, { first } from 'lodash'
 import { FilmsAdapter } from '@/adapters/films'
+import { difference } from '@/utils/deep-compare'
 
 export default function FilmsFilter(
   {
@@ -25,30 +26,32 @@ export default function FilmsFilter(
   // const innerModel = useRef<FilmsFilterType>(model)
   const [innerModel, setInnerModel] = useState<FilmsFilterType>(model)
 
-  const onModelChanged = useCallback(
-    _.debounce(async (model: FilmsFilterType) => {
-      onFilterChanged(model)
-    }, 1000), []
-  )
+  // const onModelChanged = useCallback(
+  //   async (model: FilmsFilterType) => {
+  //     console.log('insideFilterChange', _.cloneDeep(innerModel))
+  //       onFilterChanged(model)
+  //   }, []
+  // )
+  
 
   useEffect(() => {
     setDictCountries(countries, setCountries)
-    //FilmsAPI.getFilms(10, 1, {})
   }, [])
 
-  // useEffect(() => {
-  //   console.log('paramsinfilter',searchParams.toString())
-  // }, [searchParams])
+  useEffect(() => {
+    console.log('modelUpdate')
+    setInnerModel(model)
+  }, [])
 
   useEffect(() => {
-    setInnerModel(model)
+    console.log('fitler model changed', _.cloneDeep(model))
   }, [model])
 
   useEffect(() => {
     if(isFirstInnerSet.current) {
       isFirstInnerSet.current = false
     } else {
-      onModelChanged(innerModel as FilmsFilterType)
+      onFilterChanged(innerModel as FilmsFilterType)
     }
   }, [innerModel])
   
