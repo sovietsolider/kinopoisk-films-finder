@@ -13,6 +13,9 @@ export interface PaginatedSliderProps {
   imageClass?: string
   itemClass?: string
   sliderOptions?: Settings
+  additionalName?: string
+  type?: 'seasons'
+  seasonsNames? : {[k: string]: string}
 }
 
 const defaultSliderOptions = {
@@ -29,10 +32,13 @@ export default function PaginatedSlider({
   onItemClick,
   imageClass = "paginated-slider-carousel-image",
   itemClass="",
-  sliderOptions = defaultSliderOptions
+  sliderOptions = defaultSliderOptions,
+  seasonsNames,
+  type
 }: PaginatedSliderProps) {
   const [currentPage, setCurrentPage] = useState(1)
   let sliderRef = useRef(null);
+
 
   return <>
     <div className="paginated-slider-title">
@@ -47,7 +53,7 @@ export default function PaginatedSlider({
               className={`paginated-slider-pagination-item title-3 
               ${(index + 1) === currentPage && 'paginated-slider-pagination-item-active'}`}
             >
-              {index + 1}
+              { type === 'seasons' && seasonsNames && seasonsNames[index] ? seasonsNames[index] : index+1}
             </div>
           })}
         <div>
@@ -55,6 +61,7 @@ export default function PaginatedSlider({
       </div>
     </div>
     <div className='paginated-slider-episodes-slider'>
+      
       {data.length > 0 && <Slider ref={sliderRef} {...sliderOptions}>
         {data.map((episode: any, index: number) => (
           <div key={index} onClick={() => onItemClick && onItemClick(episode)} className={`${itemClass}`}>

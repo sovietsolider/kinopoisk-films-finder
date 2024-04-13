@@ -22,7 +22,8 @@
     -ms-user-select: none;
     cursor: pointer;
     padding: 0.3rem;
-    width: 1rem;
+    width: fit-content;
+    min-width: 1rem;
     text-align: center;
     border: 2px solid white;
     border-radius: 0.5rem;

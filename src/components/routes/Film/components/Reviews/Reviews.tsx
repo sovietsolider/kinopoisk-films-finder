@@ -84,7 +84,7 @@ export default function Reviews({ reviews, pages, currentPage, onPageChanged, el
         </div>
       ))}
     </div>
-    <div className='pagination-container'>
+    <div className='reviews-pagination-container'>
       <Pagination
         current={currentPage}
         pageSize={elementsPerPage}

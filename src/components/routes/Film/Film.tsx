@@ -31,9 +31,11 @@ export default function Film() {
   const [currentReviewPage, setCurrentReviewPage] = useState(1)
 
   const [seasons, setSeasons] = useState<CommonServerPaginationResponse<SeasonType>>({ docs: [], pages: 0 })
+  const [seasonsNames, setSeasonsNames] = useState<{[k: string]: string}>({})
   const cachedSeasonsPages = useRef<CachedPages<SeasonType>>({})
   const cachedPostersPages = useRef<CachedPages<PosterType>>({})
   const cachedReviewsPages = useRef<CachedPages<any>>({})
+
 
   const [storedLastFilmsUrl, setStoredLastFilmsUrl] = useRecoilState(lastFilmsUrl)
 
@@ -56,14 +58,28 @@ export default function Film() {
   }
 
   const fetchSeasons = async (id: number, limit: number, page: number) => {
+    let total;
     if (cachedSeasonsPages.current[page]) {
       setSeasons(cachedSeasonsPages.current[page])
     }
     else {
       const seasons = (await FilmsAPI.getFilmSeasons(id, limit, page)).data
+      total = seasons.total
       setSeasons({ docs: seasons.docs, pages: seasons.pages })
       cachedSeasonsPages.current[page] = { docs: seasons.docs, pages: seasons.pages }
     }
+    return total
+  }
+  const fetchSeasonsNames = async (id: number, limit: number, page: number ) => {
+    const res = (await FilmsAPI.getFilmsSeasonsNames(id, limit, page)).data
+    let resByNumber = _.groupBy(res.docs, 'number')
+
+    resByNumber = _.forOwn(resByNumber, (value, key) => {
+      resByNumber[key] = value[0].name
+    })
+    console.log(resByNumber)
+    setSeasonsNames(resByNumber as unknown as {[k: string]: string})
+    
   }
 
   const fetchReviews = async (id: number, limit: number, page: number) => {
@@ -85,8 +101,10 @@ export default function Film() {
     cachedReviewsPages.current = {}
     fetchFilm(Number(params.id))
     fetchPosters(Number(params.id), 'frame', postersLimit, currentPostersPage)
-    //fetchSeasons(Number(params.id), seasonsLimit, currentSeasonsPage)
-    //fetchReviews(Number(params.id), reviewsLimit, currentReviewPage)
+    fetchSeasons(Number(params.id), seasonsLimit, currentSeasonsPage).then((total: number) => {
+      fetchSeasonsNames(Number(params.id), total, 1)
+    })
+    fetchReviews(Number(params.id), reviewsLimit, currentReviewPage)
   }, [params])
 
   useEffect(() => {
@@ -182,17 +200,20 @@ export default function Film() {
             </div>
           </div>
         </div>
-        <div className="film-seasons-container">
+        {Object.keys(seasonsNames).length && <div className="film-seasons-container">
           <PaginatedSlider
             pages={seasons.pages}
+            type={'seasons'}
+            seasonsNames={seasonsNames}
             data={seasons.docs[0]?.episodes ?? []}
+            additionalName={seasons.docs[0]?.name ?? ''}
             onPageChanged={(page: number) => fetchSeasons(Number(params.id), seasonsLimit, page)}
             imageUrlGetter={(d: any) => d.still.previewUrl}
             sliderOptions={{ slidesToShow: 5, slidesToScroll: 5, infinite: false }}
           >
             Сезоны
           </PaginatedSlider>
-        </div>
+        </div> }
         <div className="film-posters-container">
           <PaginatedSlider
             pages={posters.pages}

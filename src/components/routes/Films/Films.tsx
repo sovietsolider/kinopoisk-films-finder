@@ -15,19 +15,11 @@ import { filmsFilter } from '@/store'
 import { FilmsGrid } from './components/FilmsGrid/FilmsGrid'
 import { FilmsAdapter } from '@/adapters/films'
 
-
-
 export function Films() {
   const [searchParams, setSearchParams] = useSearchParams();
   const calculatePageLimit = () => {
-    let page = Number(searchParams.get('page'))
-    let limit = Number(searchParams.get('limit'))
-    if (page <= 0) {
-      page = 1
-    }
-    if (limit < 10) {
-      limit = 10
-    }
+    let page = Number(searchParams.get('page')) || 1;
+    let limit = Number(searchParams.get('limit')) || 10;
     return {page, limit}
   }
 
@@ -49,6 +41,7 @@ export function Films() {
     
     return !_.isEmpty(difference(_.cloneDeep(first), _.cloneDeep(second)))
   }
+  const navigate = useNavigate();
 
   const getFilms = async (filter: FilmsFilterType, elementsPerPage: number, currentPage: number) => {
     
@@ -65,6 +58,7 @@ export function Films() {
 
   useEffect(() => {
     getFilms(filmsFilter, elementsPerPage, currentPage)
+    setStoredLastFilmsUrl(`/films?${FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filmsFilter).toString()}`)
   }, [filmsFilter.ageRating, filmsFilter.countries, filmsFilter.year, elementsPerPage, currentPage])
 
   useEffect(() => {
@@ -74,6 +68,11 @@ export function Films() {
   useEffect(() => {
     filmsFilterRef.current = filmsFilter;
   }, [filmsFilter]);
+
+  useEffect(() => {
+    setSearchParams(FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filmsFilter))
+  }, [])
+  
   
   const onPaginationChanged = (page: number, pageSize: number) => {
     if(page !== currentPage) {

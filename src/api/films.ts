@@ -38,4 +38,8 @@ export default class FilmsAPI {
   public static async getFilmReviews(id: number, limit: number, page: number) {
     return http.get(`/v1.4/review?limit=${limit}&page=${page}&movieId=${id}`)
   }
+
+  public static async getFilmsSeasonsNames(id: number, limit: number, page: number) {
+    return http.get(`/v1.4/season?limit=${limit}&page=${page}&movieId=${id}&sortField=number&sortType=1&selectFields=name&selectFields=number`)
+  } 
 }
