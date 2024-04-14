@@ -1,10 +1,11 @@
-import { Input, Modal, PaginationProps } from 'antd';
+import { Input, Modal, PaginationProps, Spin } from 'antd';
 import './FindByNameModal.scss';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FilmsGrid } from '@/components/routes/Films/components/FilmsGrid/FilmsGrid';
 import FilmsAPI from '@/api/films';
 import _ from 'lodash';
 import { FilmsFromServer } from '@/store';
+import { LoadingOutlined } from '@ant-design/icons';
 
 export default function FindByNameModal({
   opened,
@@ -14,7 +15,7 @@ export default function FindByNameModal({
   onModalClose: () => void;
 }) {
   const [name, setName] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [elementsPerPage, setElementsPerPage] = useState(10);
   const [films, setFilms] = useState<FilmsFromServer>({ docs: [], pages: 0 });
@@ -68,6 +69,15 @@ export default function FindByNameModal({
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+          { isLoading && <div className='films-loading-container text-white text-bold'>
+          <span>
+            <Spin
+              style={{ marginRight: '0.5rem' }}
+              indicator={<LoadingOutlined style={{ fontSize: 36 }} spin />}
+            />
+            Загрузка
+          </span>
+        </div>}
           <FilmsGrid
             currentPage={currentPage}
             elementsPerPage={elementsPerPage}

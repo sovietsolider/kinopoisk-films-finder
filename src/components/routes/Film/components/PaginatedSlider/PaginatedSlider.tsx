@@ -113,6 +113,7 @@ export default function PaginatedSlider({
                     <img
                       src={imageUrlGetter(episode) ?? process.env.NO_POSTER_URL}
                       className={`${imageClass} rounded-border-1`}
+                      style={ data.length === 1 ? {width: 'fit-content'} : {}}
                     />
                   </div>
                   <div className='text-bold'>{episode.name}</div>
