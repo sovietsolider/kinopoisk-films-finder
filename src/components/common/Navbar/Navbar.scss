@@ -12,9 +12,9 @@
   }
   &-item {
     cursor: pointer;
-    
+
     > a {
-      transition: color .3s;
+      transition: color 0.3s;
       color: gray;
       text-decoration: none;
     }
@@ -28,7 +28,6 @@
         color: white;
       }
     }
-    
   }
   &-filmfind {
     display: flex;

@@ -9,18 +9,17 @@ $filter-gap: 10px;
     margin-bottom: 1rem;
   }
   &-inner {
-    display:flex;
+    display: flex;
     flex: 1 1;
     gap: $filter-gap;
     flex-wrap: wrap;
   }
   &-item {
-    flex: 1 1 calc((100% / 3) - calc($filter-gap*2));
+    flex: 1 1 calc((100% / 3) - calc($filter-gap * 2));
     @media screen and (max-width: 867px) {
-      flex: 1 1 calc((100%) - calc($filter-gap*2));
+      flex: 1 1 calc((100%) - calc($filter-gap * 2));
     }
   }
-
 }
 
 .ant-select-selector {
@@ -62,7 +61,8 @@ $filter-gap: 10px;
 .ant-input-number-outlined {
   background-color: unset !important;
   border: 0 !important;
-  &:focus, &:hover {
+  &:focus,
+  &:hover {
     border: unset;
     box-shadow: unset;
     background-color: unset;
@@ -75,13 +75,15 @@ $filter-gap: 10px;
   background-color: unset !important;
 }
 
-.ant-input, .ant-input-number {
+.ant-input,
+.ant-input-number {
   padding-left: 0;
   background-color: unset;
   border: unset;
   border-radius: 0;
   border-bottom: 2px white solid !important;
-  &:focus, &:hover {
+  &:focus,
+  &:hover {
     border: unset;
     box-shadow: unset;
     background-color: unset;
@@ -93,7 +95,7 @@ $filter-gap: 10px;
   background-color: #100e19 !important;
 }
 
-::placeholder { /* Most modern browsers support this now. */
+::placeholder {
+  /* Most modern browsers support this now. */
   color: white !important;
 }
-

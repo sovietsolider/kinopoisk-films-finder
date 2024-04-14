@@ -1,10 +1,10 @@
-import NotFound from "@/components/common/NotFound/NotFound";
-import MainView from "@/components/MainView";
-import Film from "@/components/routes/Film/Film";
-import { Films } from "@/components/routes/Films/Films";
-import RandomFilm from "@/components/routes/RandomFilm/RandomFilm";
-import { createBrowserRouter, Navigate } from "react-router-dom/dist/index";
-import ProtectedRoute from "./ProtectedRoute";
+import NotFound from '@/components/common/NotFound/NotFound';
+import MainView from '@/components/MainView';
+import Film from '@/components/routes/Film/Film';
+import { Films } from '@/components/routes/Films/Films';
+import RandomFilm from '@/components/routes/RandomFilm/RandomFilm';
+import { createBrowserRouter, Navigate } from 'react-router-dom/dist/index';
+import ProtectedRoute from './ProtectedRoute';
 
 export const router = createBrowserRouter([
   {
@@ -13,18 +13,18 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/films" replace />
+        element: <Navigate to='/films' replace />,
       },
       {
-        path: "films",
+        path: 'films',
         element: <Films />,
       },
       {
-        path: "films/:id",
+        path: 'films/:id',
         element: <Film />,
       },
       {
-        path: "random",
+        path: 'random',
         element: (
           <ProtectedRoute>
             <RandomFilm />
@@ -32,9 +32,9 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "*",
+        path: '*',
         element: <NotFound />,
       },
-    ]
-  }
+    ],
+  },
 ]);
