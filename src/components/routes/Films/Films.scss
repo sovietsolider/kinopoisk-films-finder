@@ -1,5 +1,11 @@
 @import '~@/assets/scss/_colors.scss';
 
+.films-loading-container {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
 .ant-pagination-item > * {
   color: white !important;
 }

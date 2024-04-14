@@ -19,6 +19,7 @@ import FilmsAPI from '@/api/films';
 import { filmsFilter } from '@/store';
 import { FilmsGrid } from './components/FilmsGrid/FilmsGrid';
 import { FilmsAdapter } from '@/adapters/films';
+import { LoadingOutlined } from '@ant-design/icons';
 
 export function Films() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -135,6 +136,16 @@ export function Films() {
     <>
       <div className='films-container'>
         <FilmsFilter model={filmsFilter} onFilterChanged={onFilterChanged} />
+        { isLoading && <div className='films-loading-container text-white text-bold'>
+          <span>
+            <Spin
+              style={{ marginRight: '0.5rem' }}
+              indicator={<LoadingOutlined style={{ fontSize: 36 }} spin />}
+            />
+            Загрузка
+          </span>
+        </div>}
+
         <FilmsGrid
           currentPage={currentPage}
           elementsPerPage={elementsPerPage}
