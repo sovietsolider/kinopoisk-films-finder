@@ -1,5 +1,5 @@
 import './Navbar.scss'
-import { Link, useMatch } from "react-router-dom";
+import { useMatch } from "react-router-dom";
 import { useNavigate } from "react-router-dom/dist/index";
 import React, { useState } from "react";
 import FindByNameModal from '../FindByNameModal/FindByNameModal';

@@ -1,8 +1,6 @@
-import { Input, Modal, Pagination, PaginationProps, Skeleton } from "antd";
+import { Input, Modal, PaginationProps } from "antd";
 import './FindByNameModal.scss'
 import { useCallback, useEffect, useRef, useState } from "react";
-import FilmCard from "@/components/routes/Films/components/FilmCard/FilmCard";
-import { FilmType } from "@/components/routes/Film/types"
 import { FilmsGrid } from "@/components/routes/Films/components/FilmsGrid/FilmsGrid";
 import FilmsAPI from "@/api/films";
 import _ from 'lodash'

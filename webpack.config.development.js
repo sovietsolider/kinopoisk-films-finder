@@ -95,7 +95,6 @@ module.exports = (env, options) =>
             new DefinePlugin({
                 'process.env.TOKEN': JSON.stringify(process.env.TOKEN),
                 'process.env.NO_POSTER_URL': JSON.stringify(process.env.NO_POSTER_URL) 
-
             }),            
         ]
     };

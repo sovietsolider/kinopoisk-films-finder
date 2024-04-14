@@ -1,9 +1,7 @@
 import { DictsAdapter } from "@/adapters/dicts";
 import DictsAPI from "@/api/dicts";
-import FilmsAPI from "@/api/films";
 import { FilmsFilterType } from "@/components/routes/Films/components/FilmsFilter/types";
-import { CountryServer } from "@/types/dicts";
-import { atom, selector, SetterOrUpdater } from "recoil";
+import { atom, SetterOrUpdater } from "recoil";
 
 export interface FilmsFromServer {
   docs: never[];

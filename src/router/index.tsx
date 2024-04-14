@@ -3,10 +3,7 @@ import MainView from "@/components/MainView";
 import Film from "@/components/routes/Film/Film";
 import { Films } from "@/components/routes/Films/Films";
 import RandomFilm from "@/components/routes/RandomFilm/RandomFilm";
-import { storedIsAuth } from "@/store";
-import { useEffect } from "react";
-import { createBrowserRouter, createRoutesFromElements, Navigate, Route, useNavigate } from "react-router-dom/dist/index";
-import { useRecoilState } from "recoil";
+import { createBrowserRouter, Navigate } from "react-router-dom/dist/index";
 import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
