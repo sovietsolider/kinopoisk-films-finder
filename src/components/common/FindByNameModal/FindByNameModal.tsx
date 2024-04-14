@@ -27,8 +27,10 @@ export default function FindByNameModal({
   };
 
   const getFilms = async (name: string, elementsPerPage: number, currentPage: number) => {
+    setIsLoading(true)
     const films = (await FilmsAPI.getFilmsByName(name, elementsPerPage, currentPage)).data;
     setFilms({ docs: films.docs, pages: films.pages });
+    setIsLoading(false);
   };
 
   const onNameChanged = useCallback(
@@ -40,9 +42,7 @@ export default function FindByNameModal({
 
   const fetchFilms = async (name: string, elementsPerPage: number, currentPage: number) => {
     if (name.length) {
-      setIsLoading(true);
       getFilms(name, elementsPerPage, currentPage);
-      setIsLoading(false);
     }
   };
 
