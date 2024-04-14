@@ -1,0 +1,12 @@
+.notfound-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.notfound-link {
+  transition: transform .2s; 
+  &:hover {
+    transform: scale(1.2);
+  }
+}

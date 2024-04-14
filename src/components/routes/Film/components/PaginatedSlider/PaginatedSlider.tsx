@@ -50,9 +50,13 @@ export default function PaginatedSlider({
   useEffect(() => {
     console.log(currentPage)
     if(sliderRef.current) {
-      setTimeout(() => { (sliderRef.current as any).slickGoTo(0) }, 500)
+      setTimeout(() => { (sliderRef.current as any).slickGoTo(0) }, 750)
     }
   }, [currentPage])
+
+  useEffect(() => {
+    setTimeout(() => { (sliderRef.current as any).slickGoTo(0) }, 750)
+  }, [data])
 
 
   return <>

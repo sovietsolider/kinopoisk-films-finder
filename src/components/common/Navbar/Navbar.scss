@@ -12,9 +12,21 @@
   }
   &-item {
     cursor: pointer;
+    
     > a {
-      color: white;
+      transition: color .3s;
+      color: gray;
       text-decoration: none;
+    }
+    &:hover {
+      > a {
+        color: $primary;
+      }
+    }
+    &-active {
+      > a {
+        color: white;
+      }
     }
     
   }

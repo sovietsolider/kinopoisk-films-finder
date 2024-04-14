@@ -18,6 +18,14 @@ import { lastFilmsUrl } from "@/store/filmsPagination"
 import useWindowDimensions from "@/components/hooks/useWindowDimensions"
 import Actors from "./components/Actors/Actors"
 
+export const convertSlidesToShow = (data: CommonServerPaginationResponse<any>, slides: number) => {
+  return {
+    slidesToShow: data.pages <= 1 && data.docs.length < slides ? data.docs.length : slides,
+    slidesToScroll: data.pages < 1 && data.docs.length < slides ? data.docs.length : slides
+  }
+}
+
+
 
 export default function Film() {
   const postersLimit = 20
@@ -113,7 +121,7 @@ export default function Film() {
         fetchSeasonsNames(Number(params.id), total, 1)
       }) : null
     )
-    fetchPosters(Number(params.id), 'frame', postersLimit, currentPostersPage)
+    fetchPosters(Number(params.id), 'cover', postersLimit, currentPostersPage)
 
     //fetchReviews(Number(params.id), reviewsLimit, currentReviewPage)
   }, [params])
@@ -127,7 +135,7 @@ export default function Film() {
       padding: '0.5rem',
       borderRadius: '0.5rem'
     }
-    if (rating > 8) {
+    if (rating >= 7.5) {
       res.backgroundColor = 'green'
     } else if (rating > 5) {
       res.backgroundColor = 'yellow',
@@ -140,15 +148,32 @@ export default function Film() {
   }
 
   const filmsPostersResponsiveOptions = {
-    responsive: [{
-      breakpoint: 867,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        infinite: true,
-        dots: true
+    responsive: [
+      {
+        breakpoint: 1000,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          infinite: true,
+        }
+      },
+      {
+        breakpoint: 500,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: true,
+        }
       }
-    }]
+    ]
   }
 
   const filmsSimilarMoviesResponsiveOptions = {
@@ -187,28 +212,30 @@ export default function Film() {
         </div>
 
         <div className="film-title-container">
-          <img src={film.poster?.url} className="film-title-image rounded-border-1" />
+          <img src={film.poster.url ? film.poster.url : process.env.NO_POSTER_URL} className="film-title-image rounded-border-1" />
           <div className="film-title-name-container">
             <div className="film-title-name film-title-name-name title-1 text-bold">
-              {film.name}
+              {film.name ?? film.alternativeName}
             </div>
             <div className="film-title-name title-2">
-              {film.year} {film.ageRating}+
+              {film.year ?? 'Год неизвестен'} {film.ageRating ? `${film.ageRating}+` : ''}
             </div>
             {width > 867 && <div className="film-title-name-description">
-              <div className="film-title-name-description" dangerouslySetInnerHTML={{ __html: film.description.replace('&#151', '') }}>
+              <div className="film-title-name-description" dangerouslySetInnerHTML={{ __html: film.description?.replace('&#151', '') ?? '' }}>
               </div>
             </div>}
             <div className="film-title-name-rating-container">
-              {!film.rating.imdb && !film.rating.kp &&
-                <div>Отсутствует в рейтингах IMDB и Кинопоиск</div>
+              {film.rating && film.rating.imdb !== null
+                && film.rating.kp !== null && film.rating.imdb <= 0
+                && film.rating.kp <= 0 &&
+                <div style={{ marginBottom: '1rem' }}>Отсутствует в рейтингах IMDB и Кинопоиск</div>
               }
-              {film.rating.imdb &&
+              {film.rating.imdb !== null && film.rating.imdb > 0 &&
                 <Badge iconStyle={ratingBoxStyle(film.rating.imdb as number)} value={film.rating?.imdb?.toFixed(1) as string}>
                   Рейтинг IMDB
                 </Badge>
               }
-              {film.rating.kp &&
+              {film.rating.kp !== null && film.rating.kp > 0 &&
                 <Badge iconStyle={ratingBoxStyle(film.rating.kp as number)} value={film.rating?.kp?.toFixed(1) as string}>
                   Рейтинг Кинопоиск
                 </Badge>
@@ -218,7 +245,7 @@ export default function Film() {
           </div>
         </div>
         {width <= 867 &&
-          <div className="film-title-name-description" dangerouslySetInnerHTML={{ __html: film.description.replace('&#151', '') }}>
+          <div className="film-title-name-description" dangerouslySetInnerHTML={{ __html: film.description?.replace('&#151', '') ?? '' }}>
           </div>
         }
         {width < 1308 && <Actors film={film} />}
@@ -231,9 +258,9 @@ export default function Film() {
               seasonsNames={seasonsNames}
               data={seasons.docs[0]?.episodes ?? []}
               additionalName={seasons.docs[0]?.name ?? ''}
-              onPageChanged={(page: number) => {fetchSeasons(Number(params.id), seasonsLimit, page); setCurrentSeasonsPage(page)}}
-              imageUrlGetter={(d: any) => d.still.previewUrl}
-              sliderOptions={{ ...{ slidesToShow: 5, slidesToScroll: 5, infinite: false }, ...defaultResponsiveSliderOptions }}
+              onPageChanged={(page: number) => { fetchSeasons(Number(params.id), seasonsLimit, page); setCurrentSeasonsPage(page) }}
+              imageUrlGetter={(d: any) => d?.still?.previewUrl ?? process.env.NO_POSTER_URL}
+              sliderOptions={{ ...{ ...convertSlidesToShow(seasons, 5), infinite: false }, ...defaultResponsiveSliderOptions }}
             >
               Сезоны
             </PaginatedSlider>
@@ -243,12 +270,12 @@ export default function Film() {
             pages={posters.pages}
             page={currentPostersPage}
             data={posters.docs ?? []}
-            onPageChanged={(page: number) => {fetchPosters(Number(params.id), 'frame', postersLimit, page); setCurrentPostersPage(page)}}
-            imageUrlGetter={(d: any) => d.url}
-            sliderOptions={{ ...{ slidesToShow: 2, slidesToScroll: 2, infinite: false }, ...filmsPostersResponsiveOptions }}
+            onPageChanged={(page: number) => { fetchPosters(Number(params.id), 'cover', postersLimit, page); setCurrentPostersPage(page) }}
+            imageUrlGetter={(d: any) => d?.url ?? process.env.NO_POSTER_URL}
+            sliderOptions={{ ...{ ...convertSlidesToShow(posters, 4), infinite: false }, ...filmsPostersResponsiveOptions }}
             imageClass="film-posters-image"
           >
-            Кадры из фильма
+            Постеры
           </PaginatedSlider>
         </div>
         <div className="film-reviews-container">
@@ -263,12 +290,12 @@ export default function Film() {
         <div className="film-similar-movies-container">
           <PaginatedSlider
             pages={0}
-            data={film.similarMovies}
-            onItemClick={(item: FilmType['similarMovies'][number]) => { navigate(`/films/${item.id}`); window.scrollTo(0, 0); }}
-            imageUrlGetter={(d: any) => d.poster.previewUrl}
+            data={film.similarMovies ?? []}
+            onItemClick={(item: (Exclude<FilmType['similarMovies'], undefined>)[number]) => { navigate(`/films/${item.id}`); window.scrollTo(0, 0); }}
+            imageUrlGetter={(d: any) => d?.poster?.previewUrl ?? process.env.NO_POSTER_URL}
             itemClass="cursor-pointer"
             imageClass="paginated-slider-carousel-image film-similar-movies-image"
-            sliderOptions={{ ...{ slidesToShow: 3, slidesToScroll: 3, infinite: false }, ...filmsSimilarMoviesResponsiveOptions }}
+            sliderOptions={{ ...{ ...convertSlidesToShow({docs: film.similarMovies ?? [], pages: 0}, 3), infinite: false }, ...filmsSimilarMoviesResponsiveOptions }}
           >
             Похожие фильмы
           </PaginatedSlider>

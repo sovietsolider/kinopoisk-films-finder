@@ -35,7 +35,7 @@ export function setDictsForRandomFilm(
   setTypes: SetterOrUpdater<never[]>
 ) {
   if(!genres.length) {
-    DictsAPI.getGenres().then((resp) => setGenres(DictsAdapter.dictToClient(resp.data) as any))
+    DictsAPI.getGenres().then((resp) => setGenres(DictsAdapter.dictToClient(resp.data).map((d) => ({value: d.value, label: d.label.charAt(0).toUpperCase() + d.label.slice(1)})) as any))
   }
   if(!types.length) {
     DictsAPI.getTypes().then((resp) => setTypes(DictsAdapter.dictToClient(resp.data, true) as any))

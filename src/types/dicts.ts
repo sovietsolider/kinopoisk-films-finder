@@ -15,7 +15,8 @@ export type FilmImagesTypes = 'backdrops' | 'cover'
 
 export const reviewTypes = {
   positive: 'Позитивный',
-  negative: 'Негативный'
+  negative: 'Негативный',
+  neutral: 'Нейтральный'
 }
 
 export const defaultResponsiveSliderOptions = {

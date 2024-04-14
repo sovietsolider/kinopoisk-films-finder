@@ -32,6 +32,8 @@ export default function Reviews({ reviews, pages, currentPage, onPageChanged, el
       return { backgroundColor: 'green' }
     } else if (review.type === reviewTypes.negative) {
       return { backgroundColor: 'red' }
+    } else if (review.type === reviewTypes.neutral) {
+      return { backgroundColor: '#E1A700' }
     }
     return {}
   }

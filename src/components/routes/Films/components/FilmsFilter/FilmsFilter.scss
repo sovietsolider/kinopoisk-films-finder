@@ -15,7 +15,10 @@ $filter-gap: 10px;
     flex-wrap: wrap;
   }
   &-item {
-    flex: 1 1 calc((100% / 3) - calc($filter-gap*2))
+    flex: 1 1 calc((100% / 3) - calc($filter-gap*2));
+    @media screen and (max-width: 867px) {
+      flex: 1 1 calc((100%) - calc($filter-gap*2));
+    }
   }
 
 }

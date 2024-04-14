@@ -1,12 +1,14 @@
-import { Button, Input, InputNumber, Select, Slider, SliderSingleProps } from "antd"
+import { Button, Input, InputNumber, Select, Slider, SliderSingleProps, Spin } from "antd"
 import '@/components/routes/Films/components/FilmsFilter/FilmsFilter.scss'
 import { useEffect, useState } from "react"
 import { useRecoilState } from "recoil"
 import { dictCountries, setDictCountries, setDictsForRandomFilm, storedDictGenres, storedDictTypes } from "@/store"
-import { SearchOutlined } from "@ant-design/icons"
+import { LoadingOutlined, SearchOutlined } from "@ant-design/icons"
 import './RandomFilm.scss'
 import { FilmType } from "../Film/types"
 import FilmsAPI from "@/api/films"
+import { useNavigate } from "react-router-dom"
+import { notFoundContentNode } from "../Films/components/FilmsFilter/FilmsFilter"
 
 export interface RandomFilmFilterType {
   [k: string]: any
@@ -32,6 +34,8 @@ export default function RandomFilm() {
   const [countries, setCountries] = useRecoilState(dictCountries)
   const [types, setTypes] = useRecoilState(storedDictTypes)
   const [genres, setGenres] = useRecoilState(storedDictGenres)
+  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     setDictCountries(countries, setCountries)
@@ -43,7 +47,11 @@ export default function RandomFilm() {
   }, [...Object.keys(model).map((key) => model[key])])
 
   const fetchFilm = async () => {
-    await FilmsAPI.getRandomFilm(model)
+    setIsLoading(true)
+    const film = await (await FilmsAPI.getRandomFilm(model)).data
+    setFilm(film)
+    setIsLoading(false)
+    navigate(`/films/${film.id}`)
   }
 
   return <>
@@ -69,44 +77,47 @@ export default function RandomFilm() {
             placeholder="Выберите страну"
             style={{ width: '100%' }}
             options={countries}
+            notFoundContent={notFoundContentNode(countries)}
             onChange={(val) => {
               setModel({ ...model, countries: val })
             }}
           />
         </div>
-        <div className='filter-item' style={{ width: '25%', flex: '1 1 calc(25% - 20px)' }}>
+        <div className='filter-item'>
           <div className='text-white form-label text-bold'>Жанры</div>
           <Select
             mode="multiple"
             placeholder="Выберите жанры"
             style={{ width: '100%' }}
             options={genres}
+            notFoundContent={notFoundContentNode(countries)}
             onChange={(val) => {
               setModel({ ...model, genres: val })
             }}
           />
         </div>
-        <div className='filter-item' style={{ width: '25%', flex: '1 1 calc(25% - 20px)' }}>
+        <div className='filter-item'>
           <div className='text-white form-label text-bold '>Тип</div>
           <Select
             mode="multiple"
             placeholder="Выберите тип"
             style={{ width: '100%' }}
             options={types}
+            notFoundContent={notFoundContentNode(countries)}
             onChange={(val, option) => {
               console.log(option)
               setModel({ ...model, contentTypes: option.map((d: any) => d.value) })
             }}
           />
         </div>
-        <div className='filter-item' style={{ width: '25%', flex: '1 1 calc(25% - 20px)' }}>
+        <div className='filter-item'>
           <div className='text-white form-label text-bold '>Рейтинг Кинопоиска ({model.kpRating[0]}-{model.kpRating[1]})</div>
           <div style={{ borderBottom: '2px solid white', position: 'relative', top: '30px' }}></div>
-          <Slider min={0} defaultValue={[0,10]} step={0.1} max={10} range onChange={(val: number[]) => {
+          <Slider min={0} defaultValue={[0, 10]} step={0.1} max={10} range onChange={(val: number[]) => {
             setModel({ ...model, kpRating: val })
           }} />
         </div>
-        <div className='filter-item' style={{ width: '25%', flex: '1 1 calc(25% - 20px)' }}>
+        <div className='filter-item'>
           <div className='text-white form-label text-bold '>Сеть производства</div>
           <Input
             style={{ width: '100%' }}
@@ -119,9 +130,11 @@ export default function RandomFilm() {
       </div>
     </div>
     <div className="random-film-button-container">
-      <Button type="primary" icon={<SearchOutlined />} style={{ borderRadius: '1rem' }} size={'large'} onClick={() => fetchFilm()}>
+      {!isLoading ? <Button type="primary" icon={<SearchOutlined />} style={{ borderRadius: '1rem' }} size={'large'} onClick={() => fetchFilm()}>
         Мне повезет!
-      </Button>
+      </Button> :
+        <Spin indicator={<LoadingOutlined style={{ fontSize: 64 }} spin />} />
+      }
     </div>
   </>
 }

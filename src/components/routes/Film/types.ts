@@ -14,7 +14,7 @@ export interface SeasonType {
   id: string
   name: string
   number: number
-  poster: { url: string, previewUrl: string }
+  poster: { url: string, previewUrl: string } | undefined
 }
 
 export interface PosterType {
@@ -43,6 +43,7 @@ export interface FilmType {
     previewUrl: string
   },
   name: string
+  alternativeName: string
   year: number
   ageRating: number
   description: string
@@ -58,6 +59,11 @@ export interface FilmType {
     name: string
     poster: {url: string, previewUrl: string}
     id: number
+  }[] | undefined
+  persons: {
+    name: string, 
+    photo: string, 
+    enProfession: 'actor'
+    enName: string
   }[]
-  persons: {name: string, photo: string, enProfession: 'actor'}[]
 }

@@ -12,6 +12,17 @@ import _, { first } from 'lodash'
 import { FilmsAdapter } from '@/adapters/films'
 import { difference } from '@/utils/deep-compare'
 
+export const notFoundContentNode = (data: any[]) => {
+  if (!data.length) {
+    return <span>
+      <Spin style={{ marginRight: '0.5rem' }} indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+      Загрузка
+    </span>
+  } else {
+    return <div>Не найдено</div>
+  }
+}
+
 export default function FilmsFilter(
   {
     onFilterChanged, model
@@ -45,16 +56,7 @@ export default function FilmsFilter(
   
 
 
-  const notFoundContentNode = () => {
-    if (!countries.length) {
-      return <span>
-        <Spin style={{ marginRight: '0.5rem' }} indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
-        Загрузка
-      </span>
-    } else {
-      return <div>Не найдено</div>
-    }
-  }
+  
 
   return <>
     <div className="filter-container rounded-border-1">
@@ -73,7 +75,7 @@ export default function FilmsFilter(
             value={innerModel.countries}
             mode="multiple"
             placeholder="Выберите страну"
-            notFoundContent={notFoundContentNode()}
+            notFoundContent={notFoundContentNode(countries)}
             style={{ width: '100%' }}
             options={countries}
             onChange={(val) => {
