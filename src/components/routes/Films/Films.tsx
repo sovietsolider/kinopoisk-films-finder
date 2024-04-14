@@ -57,8 +57,12 @@ export function Films() {
   }
 
   useEffect(() => {
-    getFilms(filmsFilter, elementsPerPage, currentPage)
+    if(isFirstRender.current) {
+      isFirstRender.current = false
+    } else {
+      getFilms(filmsFilter, elementsPerPage, currentPage)
     setStoredLastFilmsUrl(`/films?${FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filmsFilter).toString()}`)
+    }
   }, [filmsFilter.ageRating, filmsFilter.countries, filmsFilter.year, elementsPerPage, currentPage])
 
   useEffect(() => {
@@ -70,34 +74,40 @@ export function Films() {
   }, [filmsFilter]);
 
   useEffect(() => {
-    setSearchParams(FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filmsFilter))
+    setCurrentPage(Number(searchParams.get('page')) || 1)
+    setElementsPerPage(Number(searchParams.get('limit')) || 10)
+    setFilmsFilter(FilmsAdapter.filterFromQuery(searchParams))
+  }, [searchParams])
+
+  useEffect(() => {
+    //navigate('/films?'+FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filmsFilter), {replace: true})
+    setSearchParams(FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filmsFilter))  
   }, [])
   
   
   const onPaginationChanged = (page: number, pageSize: number) => {
-    if(page !== currentPage) {
-      setCurrentPage(page)
-    }
-    if(pageSize !== elementsPerPage) {
-      setElementsPerPage(pageSize)
-    }
+    // if(page !== currentPage) {
+    //   setCurrentPage(page)
+    // }
+    // if(pageSize !== elementsPerPage) {
+    //   setElementsPerPage(pageSize)
+    // }
     console.log(page, pageSize)
     setSearchParams(FilmsAdapter.filmsFilterToServer(pageSize, page, filmsFilter))
   }
   
   const setFilmsFilterDebounced = useCallback(
-    _.debounce(async (model: FilmsFilterType) => {
+    _.debounce(async (model: FilmsFilterType, limit) => {
       console.log('insideFilterChange', _.cloneDeep(model))
-        setFilmsFilter(model)
+      setSearchParams(FilmsAdapter.filmsFilterToServer(limit, 1, model))
+      return model
     }, 1000, {trailing: true}), []
   )
 
   const onFilterChanged = (filter: FilmsFilterType) => {
     if(isDeepChanged(filmsFilterRef.current, filter)) {
       cachedPages.current = {}
-      setCurrentPage(1)
-      setFilmsFilterDebounced(filter)
-      setSearchParams(FilmsAdapter.filmsFilterToServer(elementsPerPage, currentPage, filter))
+      setFilmsFilterDebounced(filter, elementsPerPage)
     }
   }
 

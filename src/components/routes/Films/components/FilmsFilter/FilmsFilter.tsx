@@ -21,36 +21,24 @@ export default function FilmsFilter(
   }
 ) {
   const [countries, setCountries] = useRecoilState(dictCountries)
-  //const [searchParams, setSearchParams] = useSearchParams()
   const isFirstInnerSet = useRef(true)
-  // const innerModel = useRef<FilmsFilterType>(model)
   const [innerModel, setInnerModel] = useState<FilmsFilterType>(model)
 
-  // const onModelChanged = useCallback(
-  //   async (model: FilmsFilterType) => {
-  //     console.log('insideFilterChange', _.cloneDeep(innerModel))
-  //       onFilterChanged(model)
-  //   }, []
-  // )
-  
 
   useEffect(() => {
     setDictCountries(countries, setCountries)
   }, [])
 
   useEffect(() => {
-    console.log('modelUpdate')
     setInnerModel(model)
   }, [])
 
-  useEffect(() => {
-    console.log('fitler model changed', _.cloneDeep(model))
-  }, [model])
 
   useEffect(() => {
     if(isFirstInnerSet.current) {
       isFirstInnerSet.current = false
     } else {
+      console.log('on filter changed')
       onFilterChanged(innerModel as FilmsFilterType)
     }
   }, [innerModel])
