@@ -7,8 +7,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { outputConfig, copyPluginPatterns, scssConfig, entryConfig, terserPluginConfig } = require("./env.config");
 const { DefinePlugin } = require("webpack");
 
-module.exports = (env, options) => 
-{
+module.exports = (env, options) => {
     return {
         mode: options.mode,
         entry: entryConfig,
@@ -62,7 +61,7 @@ module.exports = (env, options) =>
                 },
             ],
         },
-        resolve: { 
+        resolve: {
             extensions: [".tsx", ".ts", ".js"],
             alias: {
                 '@': path.resolve(__dirname, 'src')
@@ -90,9 +89,13 @@ module.exports = (env, options) =>
                 inject: true,
                 minify: false
             }),
+            new ProvidePlugin({
+                process: 'process/browser',
+            }),
             new DefinePlugin({
                 'process.env.TOKEN': JSON.stringify(process.env.TOKEN),
-              }),
+                'process.env.NO_POSTER_URL': JSON.stringify(process.env.NO_POSTER_URL)
+            }),
         ]
     };
 };
