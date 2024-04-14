@@ -21,8 +21,7 @@ export default function Reviews({ reviews, pages, currentPage, onPageChanged, el
     return (e.offsetHeight < e.scrollHeight);
   }
 
-  const [overflowStatus, setOverflowStatus] = useState<any[]>([]);
-  const [expanded, setExpanded] = useState<any>(false);
+  const [expanded, setExpanded] = useState<{[k: string]: boolean}>({});
 
   const reviewRefs = useRef<any[]>([]);
   reviewRefs.current = reviews.map((_, i) => reviewRefs.current[i] ?? React.createRef());
@@ -38,13 +37,6 @@ export default function Reviews({ reviews, pages, currentPage, onPageChanged, el
   }
 
 
-
-  useEffect(() => {
-    const status = reviewRefs.current.map(ref =>
-      ref.current ? isEllipsisActive(ref.current) : false
-    );
-    setOverflowStatus(status);
-  }, [reviews]);
 
   return <>
     <div className="title-2 text-bold reviews-title">
@@ -70,8 +62,8 @@ export default function Reviews({ reviews, pages, currentPage, onPageChanged, el
               lines={10}
               more="Показать весь"
               less="Скрыть"
-              expanded={expanded}
-              onClick={(expanded) => setExpanded(expanded)}
+              expanded={expanded[review.id]}
+              onClick={(val) => setExpanded({...expanded, [review.id]: val})}
               truncatedEndingComponent={"... "}
               anchorClass="reviews-item-review-show-moreless"
             >
@@ -79,17 +71,15 @@ export default function Reviews({ reviews, pages, currentPage, onPageChanged, el
             </ReactShowMoreText>
 
           </div>
-          {/* {overflowStatus[index] &&
-            <div className="text-bold">Показать полностью</div>
-          } */}
         </div>
       ))}
     </div>
     <div className='reviews-pagination-container'>
       <Pagination
+        showSizeChanger={false}
         current={currentPage}
         pageSize={elementsPerPage}
-        onChange={onPageChanged}
+        onChange={(page: number, pageSize: number) => {onPageChanged(page, pageSize); setExpanded({})}}
         defaultCurrent={1}
         total={pages * elementsPerPage}
         locale={{ items_per_page: "элементов" }}

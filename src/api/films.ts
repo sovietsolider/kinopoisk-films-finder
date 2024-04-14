@@ -3,20 +3,17 @@ import { http } from "./httpAxios";
 import _ from 'lodash'
 import { FilmsAdapter } from "@/adapters/films";
 import { FilmImagesTypes } from "@/types/dicts";
-
-export function getFilmsQueryParams() {
-
-}
+import { RandomFilmFilterType } from "@/components/routes/RandomFilm/RandomFilm";
 
 export default class FilmsAPI {
   public static async getFilms(limit: number, page: number, filter: FilmsFilterType) {
     const resParams = FilmsAdapter.filmsFilterToServer(limit, page, filter)
-    
     return http.get('/v1.4/movie', { params: resParams })
   }
 
   public static async getFilmsByName(name: string, limit: number, page: number) {
-    return http.get(`/v1.4/movie/search?${ name.length > 0 ? `query=${name}&` : ''}limit=${limit}&page=${page}`)
+    console.log(encodeURI(name))
+    return http.get(`/v1.4/movie/search?${ name.length > 0 ? `query=${encodeURIComponent(name)}&` : ''}limit=${limit}&page=${page}`)
   }
 
   public static async getFilmById(id: number) {
@@ -42,4 +39,10 @@ export default class FilmsAPI {
   public static async getFilmsSeasonsNames(id: number, limit: number, page: number) {
     return http.get(`/v1.4/season?limit=${limit}&page=${page}&movieId=${id}&sortField=number&sortType=1&selectFields=name&selectFields=number`)
   } 
+
+  public static async getRandomFilm(filter: RandomFilmFilterType) {
+    const params = FilmsAdapter.randomFilmFilterToServer(filter)
+    return http.get('/v1.4/movie/random', { params })
+
+  }
 }

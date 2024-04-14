@@ -102,7 +102,6 @@ export function Films() {
   }
 
   return (<>
-  <div style={{color: 'white'}}>{JSON.stringify({elementsPerPage, currentPage})}</div>
     <div className='films-container'>
       <FilmsFilter model={filmsFilter} onFilterChanged={onFilterChanged} />
       <FilmsGrid

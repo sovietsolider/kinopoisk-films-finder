@@ -18,6 +18,7 @@ import { lastFilmsUrl } from "@/store/filmsPagination"
 import useWindowDimensions from "@/components/hooks/useWindowDimensions"
 import Actors from "./components/Actors/Actors"
 
+
 export default function Film() {
   const postersLimit = 20
   const seasonsLimit = 1
@@ -40,8 +41,14 @@ export default function Film() {
 
   const [storedLastFilmsUrl, setStoredLastFilmsUrl] = useRecoilState(lastFilmsUrl)
   const navigate = useNavigate()
-
   const { width, height } = useWindowDimensions()
+
+  const resetCache = () => {
+    console.log('reset cache', currentPostersPage)
+    cachedSeasonsPages.current = {}; setCurrentSeasonsPage(1);
+    cachedPostersPages.current = {}; setCurrentPostersPage(1);
+    cachedReviewsPages.current = {}; setCurrentReviewPage(1);
+  }
 
   const fetchFilm = async (id: number) => {
     const film = (await FilmsAPI.getFilmById(id)).data
@@ -99,9 +106,8 @@ export default function Film() {
 
 
   useEffect(() => {
-    cachedSeasonsPages.current = {}
-    cachedPostersPages.current = {}
-    cachedReviewsPages.current = {}
+    resetCache()
+
     fetchFilm(Number(params.id)).then((film: FilmType) => film.isSeries ?
       fetchSeasons(Number(params.id), seasonsLimit, currentSeasonsPage).then((total: number) => {
         fetchSeasonsNames(Number(params.id), total, 1)
@@ -172,11 +178,11 @@ export default function Film() {
   return <>
     {!_.isNil(film) &&
       <div className="film-container text-white">
-        <div className="cursor-pointer" id="film-back-button" onClick={() => storedLastFilmsUrl.length ? navigate(storedLastFilmsUrl) : '/films'}>
+        <div className="cursor-pointer" id="film-back-button" onClick={() => storedLastFilmsUrl.length ? navigate(storedLastFilmsUrl) : navigate('/films')}>
           <span>
             <LeftOutlined id="film-back-icon" />
           </span><span className="text-bold" >
-            Назад
+            К фильмам
           </span>
         </div>
 
@@ -190,7 +196,8 @@ export default function Film() {
               {film.year} {film.ageRating}+
             </div>
             {width > 867 && <div className="film-title-name-description">
-              {film.description}
+              <div className="film-title-name-description" dangerouslySetInnerHTML={{ __html: film.description.replace('&#151', '') }}>
+              </div>
             </div>}
             <div className="film-title-name-rating-container">
               {!film.rating.imdb && !film.rating.kp &&
@@ -207,22 +214,24 @@ export default function Film() {
                 </Badge>
               }
             </div>
-            {width >= 1150 && <Actors film={film} />}
+            {width >= 1308 && <Actors film={film} />}
           </div>
         </div>
-        {width <= 867 && <div className="film-title-name-description">
-          {film.description}
-        </div>}
-        {width < 1150 && <Actors film={film} />}
+        {width <= 867 &&
+          <div className="film-title-name-description" dangerouslySetInnerHTML={{ __html: film.description.replace('&#151', '') }}>
+          </div>
+        }
+        {width < 1308 && <Actors film={film} />}
         {
           Object.keys(seasonsNames).length > 0 && <div className="film-seasons-container">
             <PaginatedSlider
               pages={seasons.pages}
+              page={currentSeasonsPage}
               type={'seasons'}
               seasonsNames={seasonsNames}
               data={seasons.docs[0]?.episodes ?? []}
               additionalName={seasons.docs[0]?.name ?? ''}
-              onPageChanged={(page: number) => fetchSeasons(Number(params.id), seasonsLimit, page)}
+              onPageChanged={(page: number) => {fetchSeasons(Number(params.id), seasonsLimit, page); setCurrentSeasonsPage(page)}}
               imageUrlGetter={(d: any) => d.still.previewUrl}
               sliderOptions={{ ...{ slidesToShow: 5, slidesToScroll: 5, infinite: false }, ...defaultResponsiveSliderOptions }}
             >
@@ -232,8 +241,9 @@ export default function Film() {
         <div className="film-posters-container">
           <PaginatedSlider
             pages={posters.pages}
+            page={currentPostersPage}
             data={posters.docs ?? []}
-            onPageChanged={(page: number) => fetchPosters(Number(params.id), 'frame', postersLimit, page)}
+            onPageChanged={(page: number) => {fetchPosters(Number(params.id), 'frame', postersLimit, page); setCurrentPostersPage(page)}}
             imageUrlGetter={(d: any) => d.url}
             sliderOptions={{ ...{ slidesToShow: 2, slidesToScroll: 2, infinite: false }, ...filmsPostersResponsiveOptions }}
             imageClass="film-posters-image"
@@ -254,7 +264,7 @@ export default function Film() {
           <PaginatedSlider
             pages={0}
             data={film.similarMovies}
-            onItemClick={(item: FilmType['similarMovies'][number]) => { navigate(`/films/${item.id}`) }}
+            onItemClick={(item: FilmType['similarMovies'][number]) => { navigate(`/films/${item.id}`); window.scrollTo(0, 0); }}
             imageUrlGetter={(d: any) => d.poster.previewUrl}
             itemClass="cursor-pointer"
             imageClass="paginated-slider-carousel-image film-similar-movies-image"

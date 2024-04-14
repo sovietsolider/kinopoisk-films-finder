@@ -12,6 +12,7 @@ interface FilmsGridProps {
   currentPage: number,
   elementsPerPage: number,
   pages: number,
+  onCardClick?: (id: number) => void
   onPaginationChanged: PaginationProps['onChange']
 }
 
@@ -21,6 +22,7 @@ export function FilmsGrid({
   currentPage,
   elementsPerPage,
   pages,
+  onCardClick,
   onPaginationChanged
 }: FilmsGridProps) {
   const navigate = useNavigate()
@@ -38,7 +40,7 @@ export function FilmsGrid({
             imgSrc={film.poster?.previewUrl ?? null}
             name={film?.name ?? ''}
             id={film.id}
-            onCardClick={(id) => navigate(`/films/${id}`)}
+            onCardClick={(id) => {navigate(`/films/${id}`), onCardClick && onCardClick(id)}}
             onLoad={() => { setLoadedImagesCount(prev => prev + 1) }}
           />
         ))

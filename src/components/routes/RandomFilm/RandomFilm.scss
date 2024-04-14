@@ -1,0 +1,10 @@
+.random-film {
+  &-button-container {
+    display: flex;
+    justify-content: center;
+    > button {
+      width: 35%;
+      min-width: fit-content;
+    }
+  }
+}

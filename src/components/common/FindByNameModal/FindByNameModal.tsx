@@ -56,7 +56,7 @@ export default function FindByNameModal({ opened, onModalClose }: { opened: bool
     <Modal
       open={opened}
       footer={null}
-      style={{width: '1300px'}}
+      width={1300}
       onCancel={() => onModalClose()}
     >
       <div className="content-container">
@@ -70,6 +70,7 @@ export default function FindByNameModal({ opened, onModalClose }: { opened: bool
           films={films.docs}
           isLoading={isLoading}
           pages={films.pages}
+          onCardClick={(id) => onModalClose()}
           onPaginationChanged={onPaginationChanged} 
         />
       </div>

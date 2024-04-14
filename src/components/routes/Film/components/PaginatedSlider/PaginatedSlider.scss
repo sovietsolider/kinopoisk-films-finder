@@ -13,7 +13,7 @@
     @media screen and (max-width: 867px) {
       flex-direction: column;
       align-items: start;
-      gap: 0;
+      gap: 0.5rem;
     }
   }
   &-pagination-list {
@@ -38,6 +38,9 @@
   }
   &-episodes-slider {
     padding: 0 2rem;
+    @media screen and (max-width: 867px) {
+      padding: 0
+    }
   }
   &-carousel-image-container {
     display: flex;

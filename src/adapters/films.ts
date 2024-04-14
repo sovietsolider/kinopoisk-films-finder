@@ -1,4 +1,5 @@
 import { FilmsFilterType, FilmsFilterToServer } from "@/components/routes/Films/components/FilmsFilter/types";
+import { RandomFilmFilterType } from "@/components/routes/RandomFilm/RandomFilm";
 import _ from 'lodash'
 
 export const sliderAdapter = (val: number[]) => {
@@ -11,8 +12,6 @@ export const sliderAdapter = (val: number[]) => {
     return `${val[0]}`
   }
 }
-
-
 
 export class FilmsAdapter {
   public static filmsFilterToServer(limit: number, page: number, filter: FilmsFilterType): URLSearchParams {
@@ -53,4 +52,36 @@ export class FilmsAdapter {
     }
     return params
   }
+
+  private static appendArray(key: string, filterToServer: any, params: URLSearchParams, addPlus = false) {
+    if(filterToServer[key]) {
+      for(const item of filterToServer[key]) {
+        params.append(key, addPlus ? `+${item}` : item)
+      }
+    } 
+  }
+
+  public static randomFilmFilterToServer(filter: RandomFilmFilterType) {
+    const params = new URLSearchParams()
+    console.log(_.cloneDeep(filter))
+    const filterToServer: any =  {
+      year: sliderAdapter(filter.year),
+      'countries.name': (filter.countries && filter.countries.length) ? filter.countries : null,
+      'genres.name': (filter.genres && filter.genres.length) ? filter.genres : null,
+      'type': (filter.contentTypes && filter.contentTypes.length) ? filter.contentTypes : null,
+      'rating.kp': sliderAdapter(filter.kpRating),
+      'networks.items.name': filter.networks && filter.networks.length > 0 ? filter.networks : null
+    } 
+    
+    for(const key of ['year', 'rating.kp', 'networks.items.name']) {
+      if(filterToServer[key]) {
+        params.append(key, filterToServer[key])
+      } 
+    }
+    for(const key of ['countries.name', 'genres.name', 'type' ]) {
+      this.appendArray(key, filterToServer, params)
+    }
+    return params
+  }
+  
 }

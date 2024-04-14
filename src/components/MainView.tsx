@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom/dist/index";
-import Navbar from "./common/navbar/Navbar";
+import Navbar from "./common/Navbar/Navbar";
 import './MainView.scss'
 
 export default function MainView() {

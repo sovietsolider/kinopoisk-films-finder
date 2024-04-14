@@ -69,12 +69,11 @@ export default function FilmsFilter(
   }
 
   return <>
-    {JSON.stringify(innerModel)}
     <div className="filter-container rounded-border-1">
       <div className="filter-inner">
         <div className='filter-item'>
           <div className='text-white form-label text-bold '>Год</div>
-          <InputNumber style={{ width: '100%' }} value={innerModel.year} min={1850} placeholder="Введите год..." onChange={(val: any) => {
+          <InputNumber style={{ width: '100%' }} value={innerModel.year} min={1874} placeholder="Введите год..." onChange={(val: any) => {
             //innerModel.current = {   ...model, year: val}; 
             //onModelChanged(innerModel)
             setInnerModel({ ...model, year: val })

@@ -1,6 +1,7 @@
 import MainView from "@/components/MainView";
 import Film from "@/components/routes/Film/Film";
 import {Films} from "@/components/routes/Films/Films";
+import RandomFilm from "@/components/routes/RandomFilm/RandomFilm";
 import { useEffect } from "react";
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route, useNavigate } from "react-router-dom/dist/index";
 
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
       {
         path: "films/:id",
         element: <Film />, 
+      },
+      {
+        path: "random",
+        element: <RandomFilm />, 
       },
     ]
   }
