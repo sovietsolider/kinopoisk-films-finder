@@ -55,16 +55,26 @@ export default function PaginatedSlider({
   }, [currentPage]);
 
   useEffect(() => {
-    setTimeout(() => {
-      (sliderRef.current as any).slickGoTo(0);
-    }, 750);
+    if (sliderRef.current) {
+      setTimeout(() => {
+        (sliderRef.current as any).slickGoTo(0);
+      }, 750);
+    }
   }, [data]);
+
+  const checkZeroNumber = () => {
+    if(seasonsNames && Object.keys(seasonsNames).find((d) => d === '0')) {
+      return 0
+    } else {
+      return 1
+    }
+  }
 
   return (
     <>
       <div className='paginated-slider-title'>
         <div className='title-2 text-bold paginated-slider-title-text'>{children}</div>
-        {pages > 1 && (
+        { (pages > 1 || (type && type === 'seasons')) && (
           <div className='paginated-slider-pagination-list'>
             {Array(pages)
               .fill(0)
@@ -79,8 +89,8 @@ export default function PaginatedSlider({
                     className={`paginated-slider-pagination-item title-3 
               ${index + 1 === currentPage && 'paginated-slider-pagination-item-active'}`}
                   >
-                    {type === 'seasons' && seasonsNames && seasonsNames[index]
-                      ? seasonsNames[index]
+                    {type === 'seasons' && seasonsNames && seasonsNames[index+checkZeroNumber()]
+                      ? seasonsNames[index+checkZeroNumber()]
                       : index + 1}
                   </div>
                 );

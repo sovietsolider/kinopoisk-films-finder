@@ -20,8 +20,8 @@ import Actors from './components/Actors/Actors';
 
 export const convertSlidesToShow = (data: CommonServerPaginationResponse<any>, slides: number) => {
   return {
-    slidesToShow: data.pages <= 1 && data.docs.length < slides ? data.docs.length : slides,
-    slidesToScroll: data.pages < 1 && data.docs.length < slides ? data.docs.length : slides,
+    slidesToShow: data.docs.length < slides ? data.docs.length : slides,
+    slidesToScroll: data.docs.length < slides ? data.docs.length : slides,
   };
 };
 
@@ -296,7 +296,7 @@ export default function Film() {
                 }}
                 imageUrlGetter={(d: any) => d?.still?.previewUrl ?? process.env.NO_POSTER_URL}
                 sliderOptions={{
-                  ...{ ...convertSlidesToShow(seasons, 5), infinite: false },
+                  ...{ ...convertSlidesToShow({docs: seasons.docs[0]?.episodes ?? [], pages: seasons.pages}, 5), infinite: false },
                   ...defaultResponsiveSliderOptions,
                 }}
               >
