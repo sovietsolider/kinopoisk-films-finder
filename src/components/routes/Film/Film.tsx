@@ -52,7 +52,6 @@ export default function Film() {
   const { width, height } = useWindowDimensions()
 
   const resetCache = () => {
-    console.log('reset cache', currentPostersPage)
     cachedSeasonsPages.current = {}; setCurrentSeasonsPage(1);
     cachedPostersPages.current = {}; setCurrentPostersPage(1);
     cachedReviewsPages.current = {}; setCurrentReviewPage(1);
@@ -95,7 +94,6 @@ export default function Film() {
     resByNumber = _.forOwn(resByNumber, (value, key) => {
       resByNumber[key] = value[0].name
     })
-    console.log(resByNumber)
     setSeasonsNames(resByNumber as unknown as { [k: string]: string })
 
   }

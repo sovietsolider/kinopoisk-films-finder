@@ -16,7 +16,6 @@ export function LoginModal({opened, onModalClose} :{opened: boolean, onModalClos
   const [isAuth, setIsAuth] = useRecoilState(storedIsAuth)
 
   const handleLogin = () => {
-    console.log(model)
     if (model.login === 'user1' && model.password === 'pwd1') {
         Cookies.set('auth', 'true', { expires: 1}); // Cookie истекает через 1 день
         setIsAuth(true)

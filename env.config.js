@@ -32,7 +32,7 @@ const devServer = {
     },
     historyApiFallback: true,
     // https: true,
-    // port: "8080",
+    port: 7070,
     // host: "0.0.0.0",
     // disableHostCheck: true
 };

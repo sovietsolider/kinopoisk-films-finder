@@ -66,10 +66,6 @@ export function Films() {
   }, [filmsFilter.ageRating, filmsFilter.countries, filmsFilter.year, elementsPerPage, currentPage])
 
   useEffect(() => {
-    console.log('rerender')
-  })
-
-  useEffect(() => {
     filmsFilterRef.current = filmsFilter;
   }, [filmsFilter]);
 
@@ -92,13 +88,11 @@ export function Films() {
     // if(pageSize !== elementsPerPage) {
     //   setElementsPerPage(pageSize)
     // }
-    console.log(page, pageSize)
     setSearchParams(FilmsAdapter.filmsFilterToServer(pageSize, page, filmsFilter))
   }
   
   const setFilmsFilterDebounced = useCallback(
     _.debounce(async (model: FilmsFilterType, limit) => {
-      console.log('insideFilterChange', _.cloneDeep(model))
       setSearchParams(FilmsAdapter.filmsFilterToServer(limit, 1, model))
       return model
     }, 1000, {trailing: true}), []

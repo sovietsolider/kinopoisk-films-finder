@@ -63,7 +63,6 @@ export class FilmsAdapter {
 
   public static randomFilmFilterToServer(filter: RandomFilmFilterType) {
     const params = new URLSearchParams()
-    console.log(_.cloneDeep(filter))
     const filterToServer: any =  {
       year: sliderAdapter(filter.year),
       'countries.name': (filter.countries && filter.countries.length) ? filter.countries : null,

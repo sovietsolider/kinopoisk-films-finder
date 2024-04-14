@@ -12,7 +12,6 @@ export default class FilmsAPI {
   }
 
   public static async getFilmsByName(name: string, limit: number, page: number) {
-    console.log(encodeURI(name))
     return http.get(`/v1.4/movie/search?${ name.length > 0 ? `query=${encodeURIComponent(name)}&` : ''}limit=${limit}&page=${page}`)
   }
 

@@ -43,7 +43,6 @@ export default function RandomFilm() {
   }, [])
 
   useEffect(() => {
-    console.log(model)
   }, [...Object.keys(model).map((key) => model[key])])
 
   const fetchFilm = async () => {
@@ -105,7 +104,6 @@ export default function RandomFilm() {
             options={types}
             notFoundContent={notFoundContentNode(countries)}
             onChange={(val, option) => {
-              console.log(option)
               setModel({ ...model, contentTypes: option.map((d: any) => d.value) })
             }}
           />

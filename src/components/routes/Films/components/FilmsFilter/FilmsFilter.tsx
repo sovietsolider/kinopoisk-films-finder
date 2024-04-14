@@ -49,7 +49,6 @@ export default function FilmsFilter(
     if(isFirstInnerSet.current) {
       isFirstInnerSet.current = false
     } else {
-      console.log('on filter changed')
       onFilterChanged(innerModel as FilmsFilterType)
     }
   }, [innerModel])
